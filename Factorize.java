@@ -10,21 +10,37 @@ public class Factorize{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         List<BigInteger> input = new ArrayList<BigInteger>();
         try{
-            while(br.ready()){
-                input.add(new BigInteger(br.readLine()));
+            while(true){
+                String line = br.readLine();
+                BigInteger num;
+                try{
+                    num = new BigInteger(line);
+                }catch(NumberFormatException e){
+                    break;
+                }
+                input.add(num);
             }
             br.close();
         }catch(IOException e){
             e.printStackTrace();
         }
         for(BigInteger n : input){
-            List<BigInteger> factorization = naive(n);
+            List<BigInteger> factorization = stupid(n);
             printFactorization(factorization);
         }
     }
 
-    private static List<BigInteger> naive(BigInteger number){
-        return null;
+    private static List<BigInteger> stupid(BigInteger input){
+        List<BigInteger> factors = new ArrayList<BigInteger>();
+        BigInteger number = new BigInteger(""+input);
+        for(BigInteger i = new BigInteger("2");input.compareTo(i) > 0;i = i.add(new BigInteger("1"))){
+            if(number.mod(new BigInteger(""+i.toString())).equals(new BigInteger("0"))){
+                factors.add(i);
+                number = number.divide(i);
+                i = i.subtract(new BigInteger("1"));
+            }
+        }
+        return factors;
     }
 
     private static void printFactorization(List<BigInteger> factors){
