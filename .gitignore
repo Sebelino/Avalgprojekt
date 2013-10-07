@@ -4,3 +4,8 @@
 *.jar
 *.war
 *.ear
+
+# Eclim
+workbench.xmi
+ecklim/.classpath
+ecklim/.project
