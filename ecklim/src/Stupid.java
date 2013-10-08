@@ -6,17 +6,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Stupid extends Factorizer{
-    public static void main(String[] args){
-        Factorizer fer = new Naive();
-        List<BigInteger> input = Util.read();
-        for(BigInteger n : input){
-            List<BigInteger> factorization = fer.factorize(n);
-            Util.printFactorization(factorization);
-        }
-    }
-
     public List<BigInteger> factorize(BigInteger input){
-        int limit = 1000;
+        int limit = 10000;
         if(input.compareTo(new BigInteger(""+limit)) > 0){ return new ArrayList<BigInteger>(); }
         List<BigInteger> factors = new ArrayList<BigInteger>();
         BigInteger number = new BigInteger(""+input);
@@ -29,5 +20,4 @@ public class Stupid extends Factorizer{
         }
         return factors;
     }
-
 }
