@@ -6,6 +6,10 @@ import java.util.ArrayList;
 public class Tester{
     public static void main(String[] args){
         Factorizer faker = new Naive();
+        assertEquals("2",list(2),faker);
+        assertEquals("3",list(3),faker);
+        assertEquals("4",list(2,2),faker);
+        assertEquals("5",list(5),faker);
         assertEquals("81",list(3,3,3,3),faker);
         assertEquals("85219",list(31,2749),faker);
         assertEquals("44051",list(29,7,31,7),faker);
