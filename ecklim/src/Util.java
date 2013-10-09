@@ -33,7 +33,7 @@ public class Util{
     }
 
     public static void printFactorization(List<BigInteger> factors){
-        if(factors.isEmpty()){
+        if(factors == null || factors.isEmpty()){
             System.out.println("fail");
         }else{
             for(BigInteger f : factors){
