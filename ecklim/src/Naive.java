@@ -7,25 +7,23 @@ import java.util.ArrayList;
 
 public class Naive extends Factorizer{
     public List<BigInteger> factorize(BigInteger input){
-        BigInteger limit = new BigInteger("100000000000000000");
+        final String limitStr = "100000000000000000";
+        final int certainty = 100;
+
+        BigInteger limit = new BigInteger(limitStr);
         if(input.compareTo(limit) > 0){ return new ArrayList<BigInteger>(); }
         List<BigInteger> factors = new ArrayList<BigInteger>();
         BigInteger number = new BigInteger(""+input);
-        for(BigInteger i = new BigInteger("2");limit.compareTo(i) >= 0;i = i.add(new BigInteger("1"))){
-            if(number.isProbablePrime(100)){
+        for(BigInteger i = new BigInteger("2");!number.equals(BigInteger.ONE);i = i.add(BigInteger.ONE)){
+            if(number.isProbablePrime(certainty)){
                 factors.add(number);
                 number = BigInteger.ONE;
-                break;
             }
-            if(number.mod(new BigInteger(""+i.toString())).equals(new BigInteger("0"))){
+            if(number.mod(new BigInteger(""+i)).equals(BigInteger.ZERO)){
                 factors.add(i);
                 number = number.divide(i);
-                i = i.subtract(new BigInteger("1"));
+                i = i.subtract(BigInteger.ONE);
             }
-        }
-        BigInteger product = Util.product(factors);
-        if(!product.equals(input)){
-            factors.add(number);
         }
         return factors;
     }
