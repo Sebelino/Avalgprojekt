@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Run{
     public static void main(String[] args){
-        Factorizer factorizer = new NaiveLimit();
+        Factorizer factorizer = new NaivePrimeTest();
         List<BigInteger> input = Util.read();
         for(BigInteger n : input){
             List<BigInteger> factorization = factorizer.factorize(n);

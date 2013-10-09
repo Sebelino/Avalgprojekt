@@ -13,11 +13,14 @@ public class NaiveLimit extends Factorizer{
         List<BigInteger> factors = new ArrayList<BigInteger>();
         BigInteger number = new BigInteger(""+input);
         for(BigInteger i = new BigInteger("2");Util.sqrt(input).compareTo(i) >= 0;i = i.add(new BigInteger("1"))){
-            if(limit.compareTo(i) < 0){return new ArrayList<BigInteger>();}
+            if(limit.compareTo(i) < 0){break;}
             if(number.mod(new BigInteger(""+i.toString())).equals(new BigInteger("0"))){
                 factors.add(i);
                 number = number.divide(i);
                 i = i.subtract(new BigInteger("1"));
+                if(number.equals(new BigInteger("1"))){
+                    break;
+                }
             }
         }
         BigInteger product = Util.product(factors);

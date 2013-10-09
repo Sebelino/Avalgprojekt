@@ -1,6 +1,3 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
@@ -8,7 +5,7 @@ import java.util.ArrayList;
 
 public class Tester{
     public static void main(String[] args){
-        Factorizer faker = new NaiveLimit();
+        Factorizer faker = new NaivePrimeTest();
         assertEquals("81",list(3,3,3,3),faker);
         assertEquals("85219",list(31,2749),faker);
         assertEquals("44051",list(29,7,31,7),faker);
@@ -51,17 +48,5 @@ public class Tester{
             list.add(new BigInteger(""+n));
         }
         return list;
-    }
-
-    private static boolean isPrime(BigInteger n){
-        for(BigInteger i = new BigInteger("2");n.compareTo(i) > 0;i = i.add(new BigInteger("1"))){
-            if(n.mod(new BigInteger(""+i.toString())).equals(new BigInteger("0"))){
-                return false;
-            }
-        }
-        return true;
-    }
-    private static boolean isPrime(int n){
-        return isPrime(new BigInteger(""+n));
     }
 }
