@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Tester{
     public static void main(String[] args){
-        Factorizer faker = new NaivePrimeTest();
+        Factorizer faker = new Naive();
         assertEquals("81",list(3,3,3,3),faker);
         assertEquals("85219",list(31,2749),faker);
         assertEquals("44051",list(29,7,31,7),faker);
