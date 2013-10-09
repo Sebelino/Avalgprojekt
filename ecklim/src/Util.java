@@ -53,4 +53,26 @@ public class Util{
         }
         return a.subtract(BigInteger.ONE);
     }
+
+    @SuppressWarnings("rawtypes")
+    public static Factorizer getFactorizer(String[] args){
+        if(args.length == 1){
+            String token = args[0];
+            Class c = null;
+            try{
+                c = Class.forName(token);
+            }catch(ClassNotFoundException e){
+                System.err.println("Class "+token+" not found. Running default algorithm.");
+                return null;
+            }
+            try{
+                return (Factorizer)c.newInstance();
+            }catch(InstantiationException e){
+                System.err.println("The class could not be instantiated.");
+            }catch(IllegalAccessException e){
+                System.err.println("Illegal access.");
+            }
+        }
+        return null;
+    }
 }

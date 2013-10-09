@@ -5,16 +5,22 @@ import java.util.ArrayList;
 
 public class Tester{
     public static void main(String[] args){
-        Factorizer faker = new Naive();
-        assertEquals("2",list(2),faker);
-        assertEquals("3",list(3),faker);
-        assertEquals("4",list(2,2),faker);
-        assertEquals("5",list(5),faker);
-        assertEquals("81",list(3,3,3,3),faker);
-        assertEquals("85219",list(31,2749),faker);
-        assertEquals("44051",list(29,7,31,7),faker);
-        assertEquals("9809423",list(13,31,101,241),faker);
-        assertEquals("6342995164",list(2,2,11,144158981),faker);
+		Factorizer factorizer = Util.getFactorizer(args);
+        if(factorizer == null){
+            factorizer = new NaiveEratost2();
+        }
+
+        assertEquals("2",list(2),factorizer);
+        assertEquals("3",list(3),factorizer);
+        assertEquals("4",list(2,2),factorizer);
+        assertEquals("5",list(5),factorizer);
+        assertEquals("81",list(3,3,3,3),factorizer);
+        assertEquals("85219",list(31,2749),factorizer);
+        assertEquals("44051",list(29,7,31,7),factorizer);
+        assertEquals("9809423",list(13,31,101,241),factorizer);
+        assertEquals("6342995164",list(2,2,11,144158981),factorizer);
+        assertEquals("291282330479",list(7,31,929,1444903),factorizer);
+        assertEquals("184068044163235",list(5,19,137,32191,439339),factorizer);
         System.out.println("Testing finished.");
     }
 
@@ -46,9 +52,9 @@ public class Tester{
         throw new IllegalArgumentException(msg+"\n"+appendix);
     }
 
-    private static List<BigInteger> list(int... numbers){
+    private static List<BigInteger> list(long... numbers){
         List<BigInteger> list = new ArrayList<BigInteger>();
-        for(int n : numbers){
+        for(long n : numbers){
             list.add(new BigInteger(""+n));
         }
         return list;
