@@ -8,12 +8,16 @@ import java.util.ArrayList;
 
 public class Tester{
     public static void main(String[] args){
-        Factorizer naive = new Naive();
-        assertEquals(81,list(3,3,3,3),naive);
+        Factorizer faker = new NaiveLimit();
+        assertEquals("81",list(3,3,3,3),faker);
+        assertEquals("85219",list(31,2749),faker);
+        assertEquals("44051",list(29,7,31,7),faker);
+        assertEquals("9809423",list(13,31,101,241),faker);
+        assertEquals("6342995164",list(2,2,11,144158981),faker);
         System.out.println("Testing finished.");
     }
 
-    private static void assertEquals(final int number,final List<BigInteger> factors,final Factorizer factorizer){
+    private static void assertEquals(final String number,final List<BigInteger> factors,final Factorizer factorizer){
         final List<BigInteger> output = factorizer.factorize(new BigInteger(""+number));
         final List<BigInteger> returnedFactors = new ArrayList<BigInteger>();
         for(BigInteger n : output){
