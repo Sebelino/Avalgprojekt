@@ -14,21 +14,12 @@ public class QuadSieve extends Factorizer {
 	
 	private static final BigInteger Biggest = new BigInteger("1000000000000000000000000000000");
 	
-	public QuadSieve() {
-//		B = 100;
-//		N = new BigInteger("15347");
-		
-//		B = 100000;
-//		N = new BigInteger("691883681040489775959458417138097688761963");
-//		N = new BigInteger("15347");
-		
-		
-	}
+	public QuadSieve() {}
 
 	@Override
 	public List<BigInteger> factorize(BigInteger input) {
 		N = input;
-		B = factorBaseLimit()*4;
+		B = factorBaseLimit()*3;
 //		B = 30;
 		System.out.println("B " + B);
 		
@@ -73,11 +64,10 @@ public class QuadSieve extends Factorizer {
 		
 		int limit = (int) Math.pow(factorBase.length, 2)*10;
 //		if(limit < 50000) {
-			limit = 1000;
+//			limit = 100000000;
 //		}
 
 		int[] logQs = getLogQs(limit);
-//		System.out.println(Arrays.toString(logQs));
 		logSieve(factorBase, logPrimes, modPSolutions, logQs);
 		ArrayList<BigIntObj> smooths = findSmoothsAndFactors(logQs, factorBase, logPrimes[logPrimes.length-1]);
 //		controlCheckSmooths(smooths, factorBase);
@@ -90,60 +80,47 @@ public class QuadSieve extends Factorizer {
 		}
 //		
 		boolean[][] A = produceBoolTransMatrix(smooths);
-//		System.out.println(Arrays.toString(A[0]));
-//		System.out.println(Arrays.toString(A[1]));
-//		System.out.println(Arrays.toString(A[2]));
-		printBoolMatrix(A);
-		boolean[][] ACopy = new boolean[A.length][A[0].length];
-		for(int i = 0;i<A.length;i++) {
-			for(int j = 0;j<A[0].length;j++) {
-				ACopy[i][j] = A[i][j];
-			}
-		}
-		boolean[][] solution = SebGauss.gaussJordan(A);
 		
-		checkSolution(solution, ACopy);
-		
-		if(solution.length == 0) { // didn't find solution for some reason
-			return null;
-		}
-		
-		BigInteger[] pair = produceXYPair(solution, smooths);
-		
-		System.out.println(ACopy.length + ", " + ACopy[0].length);
-		System.out.println(solution.length + ", " + solution[0].length);
-//		System.out.println(Arrays.toString(solution[0]));
-//		int[][] A = produceMatrix(smooths);
-		
-		
-//		System.out.println(Arrays.toString(logQs));
-		
-//		BigInteger[] Qs = getQs(limit);
-////		System.out.println(Arrays.toString(Qs));
-//		LinkedList<Integer> smooths = basicSievePowers(factorBase, modPSolutions, Qs);
-////		System.out.println(Arrays.toString(Qs));
-		
-		
-		System.out.println("number primes " + factorBase.length);
-		System.out.println("largest prime " + factorBase[factorBase.length-1]);
-		System.out.println("threshold " + logPrimes[logPrimes.length-1]);
-		System.out.println(smooths.size());
-//		System.out.println(smooths);
-		
-//		System.out.println(Arrays.toString(factorBase));
-//		System.out.println(smooths.getFirst().X);
-//		System.out.println(smooths.getFirst().Y);
-//		System.out.println(Arrays.toString(smooths.getFirst().factorExps));
-//		System.out.println(A[0].length);
-//		System.out.println(Arrays.toString(A[0]));
-//		printIntMatrix(A);
-		
-//		System.out.println(logQs.length);
-//		System.out.println();
+		SebGauss gausser = new SebGauss();
+		gausser.gaussJordan(A);
 
+		int iters = 0;
+		while(iters < 10) { // Max iters just nu
+			iters++;
+			BigInteger[] pair = produceXYPair(gausser, factorBase, smooths);
+			BigInteger sum = pair[0].add(pair[1]);
+			BigInteger diff = BigInteger.ONE;
+			if(pair[0].compareTo(pair[1]) > 0) {
+				diff = pair[0].subtract(pair[1]);
+			}
+			else if(pair[1].compareTo(pair[0]) > 0) {
+				diff = pair[1].subtract(pair[0]);
+			}
+			else {
+				System.out.println("FAIL");
+			}
+			BigInteger sumGCD = sum.gcd(N);
+			BigInteger diffGCD = diff.gcd(N);
+
+//			System.out.println("sum: " + sum);
+//			System.out.println("diff: " + diff);
+//
+//			System.out.println("sumgcd: " + sumGCD);
+//			System.out.println("diffGCD: " + diffGCD);
+
+			if(sumGCD.compareTo(N) < 0 && sumGCD.compareTo(BigInteger.ONE) > 0) {
+				factors.add(sumGCD);
+			}
+			if(diffGCD.compareTo(N) < 0 && diffGCD.compareTo(BigInteger.ONE) > 0) {
+				factors.add(diffGCD);
+			}
+			if(factors.size() > 0) {
+				return factors;
+			}
+			
+		}
 		
-		
-		// TODO Auto-generated method stub
+		System.out.println("Goddamn shit");
 		return null;
 	}
 	
@@ -151,26 +128,26 @@ public class QuadSieve extends Factorizer {
 		
 	}
 
-	private void checkSolution(boolean[][] solution, boolean[][] A) {
-		boolean[] row = solution[1];
+	private void checkSolution(boolean[] solution, boolean[][] A) {
+		boolean[] row = solution;
 		
-		boolean[] tempr = A[1];
-		
-		int[] res = new int[row.length];
-		int summa = 0;
-		for(int i = 0;i<row.length;i++) {
-			boolean one = tempr[i] && row[i];
-			if(one) {
-				res[i] = 1;
-				summa++;
-			}
-			
-		}
-		
-		System.out.println("A: " + Arrays.toString(tempr));
-		System.out.println("sol: " + Arrays.toString(row));
-		System.out.println(Arrays.toString(res));
-		System.out.println("SUM " + summa);
+//		boolean[] tempr = A[1];
+//		
+//		int[] res = new int[row.length];
+//		int summa = 0;
+//		for(int i = 0;i<row.length;i++) {
+//			boolean one = tempr[i] && row[i];
+//			if(one) {
+//				res[i] = 1;
+//				summa++;
+//			}
+//			
+//		}
+//		
+//		System.out.println("A: " + Arrays.toString(tempr));
+//		System.out.println("sol: " + Arrays.toString(row));
+//		System.out.println(Arrays.toString(res));
+//		System.out.println("SUM " + summa);
 		
 		int[] result = new int[A.length];
 		
@@ -188,56 +165,75 @@ public class QuadSieve extends Factorizer {
 			result[i] = sum;
 		}
 		
+		System.out.println("IS SOLUTION??");
 		System.out.println(Arrays.toString(result));
 	}
 
-	private BigInteger[] produceXYPair(boolean[][] solution, ArrayList<BigIntObj> smooths) {
-		int[] lengths = new int[solution.length];
+	private BigInteger[] produceXYPair(SebGauss gausser, int[] factorBase, ArrayList<BigIntObj> smooths) {
 		
+		boolean[] solution = gausser.generateSolution();
+		System.out.println(Arrays.toString(solution));
 		
-		for(int i = 0;i<solution.length;i++) {
-			BigInteger X = BigInteger.ONE;
-			BigInteger sqrtX = BigInteger.ONE;
-			BigInteger Y = BigInteger.ONE;
-			
-			int[] expSums = new int[smooths.get(0).factorExps.length];
-			
-			for(int j = 0;j<solution[0].length;j++) {
-				if(solution[i][j]) {
-					for(int k = 0;k<expSums.length;k++) {
-						expSums[k] += smooths.get(j).factorExps[k];
-					}
-					BigInteger xPlusSqrtN = sqrtN.add(BigInteger.valueOf(smooths.get(j).X));
-					sqrtX = sqrtX.multiply(xPlusSqrtN);
-					X = X.multiply(xPlusSqrtN.pow(2));
-					Y = Y.multiply(smooths.get(j).Y);
+//		boolean[][] ACopy = new boolean[A.length][A[0].length];
+//		for(int i = 0;i<A.length;i++) {
+//			for(int j = 0;j<A[0].length;j++) {
+//				ACopy[i][j] = A[i][j];
+//			}
+//		}
+//		checkSolution(solution, ACopy);
+		
+//		int[] lengths = new int[solution.length];
+		
+		BigInteger X = BigInteger.ONE;
+		BigInteger sqrtX = BigInteger.ONE;
+		BigInteger Y = BigInteger.ONE;
+
+		int[] expSums = new int[smooths.get(0).factorExps.length];
+
+		for(int j = 0;j<solution.length;j++) {
+			if(solution[j]) {
+				for(int k = 0;k<expSums.length;k++) {
+					expSums[k] += smooths.get(j).factorExps[k];
 				}
+				BigInteger xPlusSqrtN = sqrtN.add(BigInteger.valueOf(smooths.get(j).X));
+				sqrtX = sqrtX.multiply(xPlusSqrtN);
+//				X = X.multiply(xPlusSqrtN.pow(2));
+//				Y = Y.multiply(smooths.get(j).Y);
 			}
-			
-			for(int k = 0;k<expSums.length;k++) {
-				expSums[k] = expSums[k] % 2;
-			}
-			
-//			System.out.println(Arrays.toString(expSums));
-			
-//			if(X.mod(N).compareTo(Y.mod(N)) == 0) {
-//				System.out.println(X.bitLength());
-//				System.out.println(Y.bitLength());
-//				BigInteger sqrtY = Util.sqrt(Y);
-////				System.out.println(Y);
-////				System.out.println(sqrtY);
-//				if(sqrtX.pow(2).compareTo(X) == 0) {
-//					System.out.println("X OK");
-//				}
-//				if(sqrtY.pow(2).compareTo(Y) == 0) {
-//					System.out.println("Y OK");
-//				}
-//			}
-//			else {
-//				System.out.println("FUUUCK");
-//			}
-			
 		}
+
+//		for(int k = 0;k<expSums.length;k++) {
+//			expSums[k] = expSums[k] % 2;
+//		}
+//
+		System.out.println("expsums " + Arrays.toString(expSums));
+		BigInteger sqrtY = BigInteger.ONE;
+		for(int i = 0;i<factorBase.length;i++) {
+			if(expSums[i] > 0) {
+				sqrtY = sqrtY.multiply(BigInteger.valueOf(factorBase[i]).pow(expSums[i]/2));
+			}
+		}
+
+//		if(X.mod(N).compareTo(Y.mod(N)) == 0) {
+//			System.out.println(X.bitLength());
+//			System.out.println(Y.bitLength());
+//			System.out.println("Waiting...");
+//			BigInteger sqrtY = Util.sqrt(Y);
+			//				System.out.println(Y);
+			//				System.out.println(sqrtY);
+//			if(sqrtX.pow(2).compareTo(X) == 0 && sqrtY.pow(2).compareTo(Y) == 0) {
+//				System.out.println("X OK");
+//				System.out.println("Y OK");
+				BigInteger[] pair = new BigInteger[2];
+				pair[0] = sqrtX;
+				pair[1] = sqrtY;
+				return pair;
+//			}
+//		}
+//		else {
+//			System.out.println("FUUUCK");
+//		}
+
 		
 //		for(int i = 0;i<solution.length;i++) {
 //			int sum = 0;
@@ -250,7 +246,7 @@ public class QuadSieve extends Factorizer {
 //		}
 //		System.out.println(Arrays.toString(lengths));
 		
-		return null;
+//		return null;
 	}
 
 	private boolean[][] produceBoolTransMatrix(ArrayList<BigIntObj> smooths) {
@@ -732,3 +728,4 @@ public class QuadSieve extends Factorizer {
 //		return (int) Math.exp(Math.sqrt(N.bitLength()*Math.log(2)*Math.log(N.bitLength()*Math.log(2)))/2);
 //	}
 }
+
