@@ -7,8 +7,8 @@ import java.util.List;
 public class Combiner extends Factorizer {
 	public static final int PRIME_LIMIT = 30000;
 	public static int NAIVE_TESTING_LIMIT = 1000;
-	public static BigInteger POLLARD_LIMIT = new BigInteger("100000000");
-	public static BigInteger BIGGEST = new BigInteger("10000000000000000000000000");
+	public static BigInteger POLLARD_LIMIT = new BigInteger("1000000000000000");
+	public static BigInteger BIGGEST = new BigInteger("1000000000000000000000000000000");
 	public static final int POTENS_LIMIT = 11;
 
 	private int[] primes;
@@ -158,3 +158,4 @@ public class Combiner extends Factorizer {
 	}
 
 }
+
