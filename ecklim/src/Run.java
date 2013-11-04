@@ -6,7 +6,8 @@ public class Run{
 
 		Factorizer factorizer = Util.getFactorizer(args);
         if(factorizer == null){
-            factorizer = new NaiveEratost2();
+            factorizer = new Combiner();
+            //factorizer = new NaiveEratost2();
         }
 		List<BigInteger> input = Util.read();
 		for(BigInteger n : input){

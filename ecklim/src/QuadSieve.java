@@ -216,8 +216,8 @@ public class QuadSieve extends Factorizer {
 			result[i] = sum;
 		}
 		
-		System.out.println("IS SOLUTION??");
-		System.out.println(Arrays.toString(result));
+		System.err.println("IS SOLUTION??");
+		System.err.println(Arrays.toString(result));
 	}
 
 	private BigInteger[] produceXYPair(UglyGauss gausser, int[] factorBase, ArrayList<BigIntObj> smooths) {
@@ -329,8 +329,8 @@ public class QuadSieve extends Factorizer {
 	}
 
 	private void controlCheckSmooths(LinkedList<BigIntObj> smooths, int[] factorBase) {
-		System.out.println("CHECK");
-		System.out.println();
+		System.err.println("CHECK");
+		System.err.println();
 		int num = 0;
 		
 		for(BigIntObj o : smooths) {
@@ -351,14 +351,14 @@ public class QuadSieve extends Factorizer {
 //			}
 //			if(write) num++;
 			if(check.compareTo(o.Y) != 0) {
-				System.out.println("???????????");
-				System.out.println(check);
-				System.out.println(o.Y);
+				System.err.println("???????????");
+				System.err.println(check);
+				System.err.println(o.Y);
 				num++;
 			}
 		}
 		
-		System.out.println("NUM WITH  " + num);
+		System.err.println("NUM WITH  " + num);
 		
 		
 	}
@@ -523,7 +523,7 @@ public class QuadSieve extends Factorizer {
 				
 				while(currX < qTable.length) {
 					if(currX == 61) {
-						System.out.println("prime " + p);
+						System.err.println("prime " + p);
 					}
 					qTable[currX] = qTable[currX].divide(p);
 					currX += factorBase[i];
@@ -536,7 +536,7 @@ public class QuadSieve extends Factorizer {
 				
 				while(currX < qTable.length) {
 					if(currX == 61) {
-						System.out.println("prime " + p);
+						System.err.println("prime " + p);
 					}
 					qTable[currX] = qTable[currX].divide(p);
 					currX += factorBase[i];
@@ -751,9 +751,9 @@ public class QuadSieve extends Factorizer {
 	public void printIntMatrix(int[][] mat) {
 		for(int i = 0;i<mat.length;i++) {
 			for(int j = 0;j<mat[0].length;j++) {
-				System.out.print(mat[i][j] + " ");
+				System.err.print(mat[i][j] + " ");
 			}
-			System.out.println();
+			System.err.println();
 		}
 	}
 	
@@ -783,8 +783,8 @@ public class QuadSieve extends Factorizer {
 			for(int j = 0;j<mat[0].length-1;j++) {
 				System.out.print((mat[i][j] ? 1 : 0) + ",");
 			}
-			System.out.print((mat[i][mat[0].length-1] ? 1 : 0) + "}");
-			System.out.println();
+			System.err.print((mat[i][mat[0].length-1] ? 1 : 0) + "}");
+			System.err.println();
 		}
 	}
 	
