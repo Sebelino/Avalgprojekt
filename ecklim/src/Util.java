@@ -25,25 +25,6 @@ public class Util{
         return input;
     }
 
-    public static BigInteger product(List<BigInteger> factors){
-        BigInteger product = new BigInteger("1");
-        for(BigInteger f : factors){
-            product = product.multiply(f);
-        }
-        return product;
-    }
-
-    public static void printFactorization(List<BigInteger> factors){
-        if(factors == null || factors.isEmpty()){
-            System.out.println("fail");
-        }else{
-            for(BigInteger f : factors){
-                System.out.println(f);
-            }
-        }
-        System.out.println();
-    }
-
     public static int log2(BigInteger n) { // gör bättre genom att använda bigdecimal och avrunda
     	BigInteger two = BigInteger.valueOf(2);
         int a = 0; // lower
@@ -95,7 +76,18 @@ public class Util{
 //        System.out.println((System.nanoTime() - startTime)/(double) 1000000000);
         return a.subtract(BigInteger.ONE);
     }
-    
+/*
+    public static BigInteger sqrt(BigInteger n) {
+        BigInteger a = BigInteger.ONE;
+        BigInteger b = new BigInteger(n.shiftRight(5).add(new BigInteger("8")).toString());
+        while(b.compareTo(a) >= 0) {
+            BigInteger mid = new BigInteger(a.add(b).shiftRight(1).toString());
+            if(mid.multiply(mid).compareTo(n) > 0){ b = mid.subtract(BigInteger.ONE); }
+            else{ a = mid.add(BigInteger.ONE); }
+        }
+        return a.subtract(BigInteger.ONE);
+    }
+*/
     /*
      * Only works for odd primes
      * n legendre p must be 1
@@ -246,29 +238,7 @@ public class Util{
     	}
     }
 
-    @SuppressWarnings("rawtypes")
-    public static Factorizer getFactorizer(String[] args){
-        if(args.length == 1){
-            String token = args[0];
-            Class c = null;
-            try{
-                c = Class.forName(token);
-            }catch(ClassNotFoundException e){
-                System.err.println("Class "+token+" not found. Running default algorithm.");
-                return null;
-            }
-            try{
-                return (Factorizer)c.newInstance();
-            }catch(InstantiationException e){
-                System.err.println("The class could not be instantiated.");
-            }catch(IllegalAccessException e){
-                System.err.println("Illegal access.");
-            }
-        }
-        return null;
-    }
-}
-
+    public static BigInteger product(List<BigInteger> factors){
         BigInteger product = new BigInteger("1");
         for(BigInteger f : factors){
             product = product.multiply(f);
@@ -285,17 +255,6 @@ public class Util{
             }
         }
         System.out.println();
-    }
-
-    public static BigInteger sqrt(BigInteger n) {
-        BigInteger a = BigInteger.ONE;
-        BigInteger b = new BigInteger(n.shiftRight(5).add(new BigInteger("8")).toString());
-        while(b.compareTo(a) >= 0) {
-            BigInteger mid = new BigInteger(a.add(b).shiftRight(1).toString());
-            if(mid.multiply(mid).compareTo(n) > 0){ b = mid.subtract(BigInteger.ONE); }
-            else{ a = mid.add(BigInteger.ONE); }
-        }
-        return a.subtract(BigInteger.ONE);
     }
 
     @SuppressWarnings("rawtypes")

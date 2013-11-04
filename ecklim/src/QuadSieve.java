@@ -117,7 +117,7 @@ public class QuadSieve extends Factorizer {
 		
 		boolean[][] A = produceBoolTransMatrix(smooths);
 		
-		SebGauss gausser = new SebGauss();
+		UglyGauss gausser = new UglyGauss();
 		gausser.gaussJordan(A);
 
 //		System.out.println(factorBase.length);
@@ -220,7 +220,7 @@ public class QuadSieve extends Factorizer {
 		System.out.println(Arrays.toString(result));
 	}
 
-	private BigInteger[] produceXYPair(SebGauss gausser, int[] factorBase, ArrayList<BigIntObj> smooths) {
+	private BigInteger[] produceXYPair(UglyGauss gausser, int[] factorBase, ArrayList<BigIntObj> smooths) {
 		
 		boolean[] solution = gausser.generateSolution();
 //		System.out.println(Arrays.toString(solution));
