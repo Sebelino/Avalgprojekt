@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class NaiveLimit extends Factorizer{
     public List<BigInteger> factorize(BigInteger input){
-        final String limitStr = "3000";
+        final String limitStr = "1000000"; // 3000
         final int certainty = 100;
 
         BigInteger limit = new BigInteger(limitStr);

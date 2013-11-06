@@ -41,11 +41,13 @@ public class Combiner extends Factorizer {
 				// Pollard
 				if(curr.compareTo(POLLARD_LIMIT) < 0) { 
 					Pollard pollard = new Pollard();
-					List<BigInteger> pollardFactors = pollard.factorize(curr);
+					List<BigInteger> pollardFactors = pollard.factorize(curr); // TODO: Kan bli nullpointer
 
-					for(BigInteger factor : pollardFactors) {
-						factors.add(factor);
-					}
+                    if(pollardFactors != null){
+                        for(BigInteger factor : pollardFactors) {
+                            factors.add(factor);
+                        }
+                    }
 				}
 				else {
 					// Perfekt potens?

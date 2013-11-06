@@ -258,16 +258,11 @@ public class Util{
     }
 
     @SuppressWarnings("rawtypes")
-    public static Factorizer getFactorizer(String[] args){
+    public static Factorizer getFactorizer(String[] args) throws ClassNotFoundException{
         if(args.length == 1){
             String token = args[0];
             Class c = null;
-            try{
-                c = Class.forName(token);
-            }catch(ClassNotFoundException e){
-                System.err.println("Class "+token+" not found. Running default algorithm.");
-                return null;
-            }
+            c = Class.forName(token);
             try{
                 return (Factorizer)c.newInstance();
             }catch(InstantiationException e){
@@ -275,6 +270,8 @@ public class Util{
             }catch(IllegalAccessException e){
                 System.err.println("Illegal access.");
             }
+        }else{
+            throw new ClassNotFoundException("One argument, please.");
         }
         return null;
     }

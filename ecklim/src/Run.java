@@ -3,11 +3,12 @@ import java.util.List;
 
 public class Run{
 	public static void main(String[] args){
-
-		Factorizer factorizer = Util.getFactorizer(args);
-        if(factorizer == null){
-            factorizer = new Combiner();
+        Factorizer factorizer = null;
+        try{
+            factorizer = Util.getFactorizer(args);
+        }catch(ClassNotFoundException e){
             //factorizer = new NaiveEratost2();
+            factorizer = new Pollard();
         }
 		List<BigInteger> input = Util.read();
 		for(BigInteger n : input){
@@ -24,8 +25,7 @@ public class Run{
 					Util.printFactorization(factorization);
 				}
 				else {
-					int a = 1/0;  // Kattis debug; will give run time error if we get here.
-					Util.printFactorization(null);
+					throw new ArithmeticException();  // Kattis debug; will give run time error if we get here.
 				}
 			}
 		}

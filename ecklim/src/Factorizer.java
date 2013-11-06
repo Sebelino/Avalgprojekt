@@ -10,6 +10,8 @@ import java.util.ArrayList;
  * Every factorization algorithm should be wrapped in a class and inherit this class.
  */
 public abstract class Factorizer{
-    /** @return A list of prime number factors of the number input. */
+    /** @return A list of prime number factors of the number input,
+     * or an empty list if the factorization failed.
+     */
     public abstract List<BigInteger> factorize(BigInteger input);
 }
