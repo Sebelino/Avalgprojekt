@@ -135,13 +135,13 @@ public class UglyGauss {
     				}
     			}
     		}
-    		System.out.println("SolCount " + solutionCount);
+    		//System.err.println("SolCount " + solutionCount);
     		solutionCount++;
-    		System.out.println("SolCount " + solutionCount);
+    		//System.err.println("SolCount " + solutionCount);
     		return sol;
     	}
     	else {
-    		System.out.println("Out of solutions");
+    		//System.err.println("Out of solutions");
     		return null;
     	}
     }
@@ -207,8 +207,8 @@ public class UglyGauss {
 			}
 			result[i] = sum;
 		}
-		System.out.println("HEJ:");
-		System.out.println(Arrays.toString(result));
+		//System.err.println("HEJ:");
+		//System.err.println(Arrays.toString(result));
 	}
 
     /*public static void main(String[] args) {

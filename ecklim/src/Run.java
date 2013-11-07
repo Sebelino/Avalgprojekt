@@ -7,7 +7,7 @@ public class Run{
         try{
             factorizer = Util.getFactorizer(args);
         }catch(ClassNotFoundException e){
-            //factorizer = new NaiveEratost2();
+            //factorizer = new Naive();
             factorizer = new Pollard();
         }
 		List<BigInteger> input = Util.read();

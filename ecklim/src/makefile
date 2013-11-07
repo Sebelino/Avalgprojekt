@@ -6,6 +6,7 @@ test:
 	java Tester
 stats:
 	java Tester > naive.dat
+	java Tester EratoFactorizer > erato.dat
 	java Tester Pollard > pollard.dat
 	java Tester Combiner > combiner.dat
 	gnuplot diagram.gp
