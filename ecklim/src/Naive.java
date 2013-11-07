@@ -4,22 +4,28 @@ import java.util.ArrayList;
 
 public class Naive extends Factorizer{
     public List<BigInteger> factorize(BigInteger input){
-        final String limitStr = "100000000000000000";
+        final String limitStr = "7300";
         final int certainty = 100;
 
         BigInteger limit = new BigInteger(limitStr);
-        if(input.compareTo(limit) > 0){ return new ArrayList<BigInteger>(); }
         List<BigInteger> factors = new ArrayList<BigInteger>();
         BigInteger number = new BigInteger(""+input);
-        for(BigInteger i = new BigInteger("2");!number.equals(BigInteger.ONE);i = i.add(BigInteger.ONE)){
+        while(number.mod(new BigInteger("2")).equals(BigInteger.ZERO)){
+            number = number.divide(new BigInteger("2"));
+            factors.add(new BigInteger("2"));
+        }
+        for(BigInteger i = new BigInteger("3");!number.equals(BigInteger.ONE);i = i.add(new BigInteger("2"))){
+            //System.out.println("i="+i);
             if(number.isProbablePrime(certainty)){
                 factors.add(number);
                 number = BigInteger.ONE;
             }
-            if(number.mod(new BigInteger(""+i)).equals(BigInteger.ZERO)){
-                factors.add(i);
+            if(i.compareTo(limit) >= 0){
+                return new ArrayList<BigInteger>();
+            }
+            while(number.mod(new BigInteger(""+i)).equals(BigInteger.ZERO)){
                 number = number.divide(i);
-                i = i.subtract(BigInteger.ONE);
+                factors.add(i);
             }
         }
         return factors;
