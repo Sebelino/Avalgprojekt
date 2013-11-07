@@ -5,9 +5,11 @@ input1:
 test:
 	java Tester
 stats:
-	java Tester > naive.dat
-	java Tester EratoFactorizer > erato.dat
-	java Tester Pollard > pollard.dat
-	java Tester Combiner > combiner.dat
+	java Tester > all.dat
+	awk '/Results/{x="results"++i".dat";next}{print > x;}' all.dat
+	mv results1.dat Naive.dat
+	mv results2.dat Eratosthenes.dat
+	mv results3.dat Pollard.dat
+	mv results4.dat Combiner.dat
 	gnuplot diagram.gp
 	feh output.png

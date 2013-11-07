@@ -266,7 +266,7 @@ public class Util{
             try{
                 return (Factorizer)c.newInstance();
             }catch(InstantiationException e){
-                System.err.println("The class could not be instantiated.");
+                System.err.println("The class could not be instantiated: "+token);
             }catch(IllegalAccessException e){
                 System.err.println("Illegal access.");
             }

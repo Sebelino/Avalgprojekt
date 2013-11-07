@@ -7,72 +7,56 @@ import java.util.Random;
 import java.util.Comparator;
 
 public class Tester{
-    private final Factorizer factorizer;
-
-    public Tester(String[] args){
-        Factorizer f = null;
-        try{
-            f = Util.getFactorizer(args);
-        }catch(ClassNotFoundException e){
-            f = new Naive();
-        }finally{
-            factorizer = f;
-            System.err.println("Using "+factorizer.getClass().getName()+".");
-        }
-    }
+    public Tester(String[] args){ }
 
     public void runTests(){
-        //assertEquals("6342995164",list(2,2,11,144158981),factorizer);
-        //compute("291282330479",factorizer);
-        //testInterval("2","1000000",factorizer);
-        List<Result> results = benchmark(factorizer);
-        for(Result result : results){
-            System.out.println(result.toStringNumberTime());
-        }
-    }
-
-    private List<Result> benchmark(Factorizer factorizer){
-        List<Result> results;
-        /* Get raw results */
-        //int samples = 1000;
-        //results = testInterval("2","10000",3,factorizer);
-        results = dualFactorResults(3,60,factorizer);
-        /* Process the results */
-        List<Result> processedResults = new ArrayList<Result>();
-        final Iterator<Result> it = results.iterator();
-        while(it.hasNext()){
-            Result r = it.next();
-            if(r.succeeded/* && !r.factorizer.getClass().getName().equals("Naive")*/){
-                processedResults.add(r);
+        List<List<Result>> resultLists = benchmark();
+        for(List<Result> results : resultLists){
+            System.out.println("Results");
+            for(Result result : results){
+                System.out.println(result.toStringNumberTime());
             }
         }
-//        Iterator<Result> it = results.iterator();
-//        while(it.hasNext()){
-//            long averageTime = 0;
-//            Result element = null;
-//            int failures = 0;
-//            for(int i = 0;i < samples;i++){
-//                element = it.next();
-//                if(!element.succeeded){
-//                    failures++;
-//                }
-//                averageTime += element.nanoseconds;
-//            }
-//            if((double)failures/samples > 0.01){ // Fault tolerance.
-//                System.err.println("Failed around "+element.number+".");
-//                break;
-//            }else{
-//                processedResults.add(new Result(element.number,element.factors,averageTime/samples,element.factorizer));
-//            }
-//        }
-        return processedResults;
     }
 
-    private List<Result> dualFactorResults(int lowerExponent,int upperExponent,Factorizer factorizer){
+    private List<List<Result>> benchmark(){
+        String[] factorizerNames = new String[]{"Naive","EratoFactorizer","Pollard","Combiner"};
+        List<Factorizer> factorizers = new ArrayList<Factorizer>();
+        for(String name : factorizerNames){
+            try{
+                factorizers.add(Util.getFactorizer(new String[]{name}));
+            }catch(ClassNotFoundException e){
+                System.err.println("Class not found: "+name);
+            }
+        }
+        /* Get numbers to test on */
+        List<BigInteger> numbers = nFactorProducts(3,60);
+        /* Get the raw results */
+        List<List<Result>> resultLists = new ArrayList<List<Result>>();
+        for(Factorizer factorizer : factorizers){
+            List<Result> results = factorizationResults(numbers,factorizer);
+            resultLists.add(results);
+        }
+        /* Process the results */
+        List<List<Result>> processedResultLists = new ArrayList<List<Result>>();
+        for(List<Result> results : resultLists){
+            List<Result> processedResults = new ArrayList<Result>();
+            final Iterator<Result> it = results.iterator();
+            while(it.hasNext()){
+                Result r = it.next();
+                if(r.succeeded){
+                    processedResults.add(r);
+                }
+            }
+            processedResultLists.add(processedResults);
+        }
+        return processedResultLists;
+    }
+
+    private List<Result> factorizationResults(List<BigInteger> numbers,Factorizer factorizer){
         List<Result> results = new ArrayList<Result>();
-        for(int i = lowerExponent;i <= upperExponent;i++){
-            BigInteger composite = dualFactorProduct(i,factorizer);
-            Result result = compute(composite.toString(),factorizer);
+        for(BigInteger number : numbers){
+            Result result = compute(number.toString(),factorizer);
             if(result.succeeded){
                 System.err.println("Succeeded:\t"+result.number);
             }else{
@@ -83,24 +67,40 @@ public class Tester{
         return results;
     }
 
+    private List<BigInteger> nFactorProducts(int lowerExponent,int upperExponent){
+        List<BigInteger> numbers = new ArrayList<BigInteger>();
+        for(int i = lowerExponent;i <= upperExponent;i++){
+            BigInteger composite = nFactorProduct(i,2);
+            numbers.add(composite);
+        }
+        return numbers;
+    }
+
     /**
-     * @return The product of two primes on the interval [2^e,2^(e+1)-1].
+     * @return The product of n random primes on the interval [2^e,2^(e+1)-1].
      */
-    private BigInteger dualFactorProduct(final int e,final Factorizer factorizer){
+    private BigInteger nFactorProduct(final int e,final int n){
         BigInteger upper = new BigInteger("2").pow(e+1).subtract(BigInteger.ONE);
         List<BigInteger> primes = new ArrayList<BigInteger>();
-        for(BigInteger i = new BigInteger("2").pow(e);i.compareTo(upper) < 0;i = i.add(BigInteger.ONE)){
-            if(i.isProbablePrime(100)){
-                primes.add(i);
-                if(primes.size() == 2){
-                    break;
+        BigInteger randomPosition = upper;
+        while(primes.size() < n){
+            randomPosition = randomNumberOnInterval(e);
+            for(BigInteger i = randomPosition;i.compareTo(upper) <= 0;i = i.add(BigInteger.ONE)){ //TODO:<=?
+                if(i.isProbablePrime(100)){
+                    primes.add(i);
+                    if(primes.size() == n){
+                        break;
+                    }
                 }
             }
         }
-        if(primes.size() != 2){
-            throw new RuntimeException("Did not find 2 primes.");
+        if(primes.size() > n){
+            throw new RuntimeException("Accumulated more primes than expected, for some reason.");
         }
-        BigInteger product = primes.get(0).multiply(primes.get(1));
+        BigInteger product = BigInteger.ONE;
+        for(BigInteger prime : primes){
+            product = product.multiply(prime);
+        }
         return product;
     }
 
@@ -122,12 +122,23 @@ public class Tester{
         if(n <= 0){
             return new Result(new BigInteger("0"),new ArrayList<BigInteger>(),0,factorizer);
         }
+        BigInteger randomNo = randomNumberOnInterval(n);
+        return compute(randomNo.toString(),factorizer);
+    }
+
+    /**
+     * @return A random number on [2^n,2^(n+1)-1].
+     */
+    private BigInteger randomNumberOnInterval(final int n){
+        if(n <= 0){
+            return BigInteger.ZERO;
+        }
         Random rng = new Random();
         BigInteger randomNumber;
         do{
             randomNumber = new BigInteger(n+1,rng);
         }while(randomNumber.shiftRight(n).equals(BigInteger.ZERO));
-        return compute(randomNumber.toString(),factorizer);
+        return randomNumber;
     }
 
     private List<Result> testInterval(final String startpoint,final String endpoint,final int iterations,final Factorizer factorizer){
