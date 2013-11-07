@@ -1,6 +1,8 @@
 set terminal pngcairo enhanced
 set output "output.png"
-set title "Benchmarks when trying to factorize a product pq"
+#set title "Benchmarks for trying to factorize a prime number"
+set title "Benchmarks for factorizing a product p{\267}q"
+#set title "Benchmarks for factorizing a product p{\267}q{\267}r"
 set xlabel "Number"
 set ylabel "Time (ns)"
 set key right bottom

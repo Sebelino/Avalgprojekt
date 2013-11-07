@@ -20,9 +20,9 @@ public class Naive extends Factorizer{
                 factors.add(number);
                 number = BigInteger.ONE;
             }
-            if(i.compareTo(limit) >= 0){
-                return new ArrayList<BigInteger>();
-            }
+            //if(i.compareTo(limit) >= 0){
+            //    return new ArrayList<BigInteger>();
+            //}
             while(number.mod(new BigInteger(""+i)).equals(BigInteger.ZERO)){
                 number = number.divide(i);
                 factors.add(i);

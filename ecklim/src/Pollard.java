@@ -71,7 +71,8 @@ public class Pollard extends Factorizer {
 		BigInteger lastVal = new BigInteger(number.bitLength()-1, random);
 		sequence.add(lastVal);
 
-		for(int i = 1;i < POLLARD_LIMIT;i++) {
+		//for(int i = 1;i < POLLARD_LIMIT;i++) {
+		for(int i = 1;true;i++) {
 			while(sequence.size() <= 2*i) {
 				BigInteger newVal = lastVal.pow(2).add(BigInteger.ONE).remainder(number);
 				lastVal = newVal;
@@ -85,8 +86,8 @@ public class Pollard extends Factorizer {
 				return factor;
 			}
 		}
-		debug("Found no factor?");
-		return null;
+		//debug("Found no factor?");
+		//return null;
 	}
 
 	private BigInteger trySmallPrimes(LinkedList<BigInteger> factors, BigInteger number) {

@@ -10,6 +10,7 @@ public class Run{
             //factorizer = new Naive();
             factorizer = new Pollard();
         }
+        System.out.println("Using "+factorizer.getClass().getName());
 		List<BigInteger> input = Util.read();
 		for(BigInteger n : input){
 			List<BigInteger> factorization = factorizer.factorize(n);

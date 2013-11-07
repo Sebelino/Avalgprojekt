@@ -13,7 +13,8 @@ public class QuadSieve extends Factorizer {
 	private BigInteger sqrtN;
 	private int[] lotsOfPrimes;
 	
-	private static final BigInteger Biggest = new BigInteger("1000000000000000000000000000000");
+	//private static final BigInteger Biggest = new BigInteger("1000000000000000000000000000000");
+	private static final BigInteger Biggest = new BigInteger("1000000000000000000000000000000000000000");
 	
 //	public QuadSieve() {}
 	

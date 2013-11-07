@@ -7,9 +7,14 @@ import java.util.Random;
 import java.util.Comparator;
 
 public class Tester{
+    public static long TIME_LIMIT = 3000000000L; // In nanoseconds
+    public static int PRIME_FACTORS = 1;
+    public static int UPPER_EXPONENT = 80;
+
     public Tester(String[] args){ }
 
     public void runTests(){
+        System.err.println(Runtime.getRuntime().maxMemory());
         List<List<Result>> resultLists = benchmark();
         for(List<Result> results : resultLists){
             System.out.println("Results");
@@ -21,6 +26,7 @@ public class Tester{
 
     private List<List<Result>> benchmark(){
         String[] factorizerNames = new String[]{"Naive","EratoFactorizer","Pollard","Combiner"};
+        //String[] factorizerNames = new String[]{"Combiner"};
         List<Factorizer> factorizers = new ArrayList<Factorizer>();
         for(String name : factorizerNames){
             try{
@@ -30,7 +36,7 @@ public class Tester{
             }
         }
         /* Get numbers to test on */
-        List<BigInteger> numbers = nFactorProducts(3,60);
+        List<BigInteger> numbers = nFactorProducts(3,UPPER_EXPONENT);
         /* Get the raw results */
         List<List<Result>> resultLists = new ArrayList<List<Result>>();
         for(Factorizer factorizer : factorizers){
@@ -55,12 +61,17 @@ public class Tester{
 
     private List<Result> factorizationResults(List<BigInteger> numbers,Factorizer factorizer){
         List<Result> results = new ArrayList<Result>();
+        long time = System.nanoTime();
         for(BigInteger number : numbers){
             Result result = compute(number.toString(),factorizer);
             if(result.succeeded){
                 System.err.println("Succeeded:\t"+result.number);
             }else{
                 System.err.println("Failed:\t\t"+result.number);
+            }
+            if(System.nanoTime()-time > TIME_LIMIT){
+                System.err.println("Time limit exceeded.");
+                break;
             }
             results.add(result);
         }
@@ -70,7 +81,7 @@ public class Tester{
     private List<BigInteger> nFactorProducts(int lowerExponent,int upperExponent){
         List<BigInteger> numbers = new ArrayList<BigInteger>();
         for(int i = lowerExponent;i <= upperExponent;i++){
-            BigInteger composite = nFactorProduct(i,2);
+            BigInteger composite = nFactorProduct(i,PRIME_FACTORS);
             numbers.add(composite);
         }
         return numbers;
@@ -88,10 +99,11 @@ public class Tester{
             for(BigInteger i = randomPosition;i.compareTo(upper) <= 0;i = i.add(BigInteger.ONE)){ //TODO:<=?
                 if(i.isProbablePrime(100)){
                     primes.add(i);
-                    if(primes.size() == n){
-                        break;
-                    }
+                    break;
                 }
+            }
+            if(primes.size() == n){
+                break;
             }
         }
         if(primes.size() > n){

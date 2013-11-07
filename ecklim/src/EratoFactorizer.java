@@ -2,11 +2,14 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.BitSet;
 
 
 public class EratoFactorizer extends Factorizer {
 	int[] primes;
-	public static final int PRIME_LIMIT = 5000000;
+	//public static final int PRIME_LIMIT =   5000000;
+	public static final int PRIME_LIMIT = 300000000;
+	//public static final int PRIME_LIMIT = 1000000000;
 	public static int NAIVE_TESTING_LIMIT = PRIME_LIMIT;
 	
 	public EratoFactorizer () {
@@ -15,6 +18,11 @@ public class EratoFactorizer extends Factorizer {
 
 	@Override
 	public List<BigInteger> factorize(BigInteger input) {
+		//if(input.isProbablePrime(100)) { // Avkommentera för bättre performance för primtal.
+		//	List<BigInteger> list = new ArrayList<BigInteger>();
+        //    list.add(input);
+        //    return list;
+		//}
 		LinkedList<BigInteger> factors = new LinkedList<BigInteger>();
 
 		BigInteger number = trySmallPrimes(factors, input); // Naive testing
@@ -31,16 +39,16 @@ public class EratoFactorizer extends Factorizer {
 	public int[] eratoPrimes(int limit) { // Eratosthenes
 		ArrayList<Integer> list = new ArrayList<Integer>();
 
-		boolean[] numbers = new boolean[limit+1];
+		BitSet numbers = new BitSet(limit+1);
 		int currPrime = 2;
 		while(currPrime <= limit) {
-			if(numbers[currPrime]) {
+			if(numbers.get(currPrime)) {
 				currPrime++;
 			}
 			else {
 				list.add(currPrime);
 				for(int i = currPrime;i<=limit;i += currPrime) {
-					numbers[i] = true;
+					numbers.set(i,true);
 				}
 			}
 		}

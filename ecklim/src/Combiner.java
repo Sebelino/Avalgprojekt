@@ -8,7 +8,8 @@ public class Combiner extends Factorizer {
 	public static final int PRIME_LIMIT = 30000;
 	public static int NAIVE_TESTING_LIMIT = 1000;
 	public static BigInteger POLLARD_LIMIT = new BigInteger("1000000000000000");
-	public static BigInteger BIGGEST = new BigInteger("1000000000000000000000000000000");
+	//public static BigInteger BIGGEST = new BigInteger("1000000000000000000000000000000");
+	public static BigInteger BIGGEST = new BigInteger("1000000000000000000000000000000000000");
 	public static final int POTENS_LIMIT = 11;
 
 	private int[] primes;
@@ -29,6 +30,7 @@ public class Combiner extends Factorizer {
 		LinkedList<BigInteger> queue = new LinkedList<BigInteger>();
 		queue.add(number);
 		
+        Pollard pollard = new Pollard();
 		while(!queue.isEmpty()) {
 			BigInteger curr = queue.removeLast();
 			
@@ -40,9 +42,11 @@ public class Combiner extends Factorizer {
 				
 				// Pollard
 				if(curr.compareTo(POLLARD_LIMIT) < 0) { 
-					Pollard pollard = new Pollard();
 					List<BigInteger> pollardFactors = pollard.factorize(curr); // TODO: Kan bli nullpointer
 
+                    if(pollardFactors == null){//SEB
+                        System.err.println("POLLARDNULL");
+                    }
                     if(pollardFactors != null){
                         for(BigInteger factor : pollardFactors) {
                             factors.add(factor);
@@ -78,6 +82,7 @@ public class Combiner extends Factorizer {
 					else {
 						if(curr.compareTo(BIGGEST) > 0) {
 //							System.out.println(curr);
+							System.err.println("COMPARETOBIGGEST");
 							return null;
 						}
 						
@@ -87,6 +92,7 @@ public class Combiner extends Factorizer {
 						List<BigInteger> qsFactors = qs.factorize(curr);
 //						System.out.println("TIME: " + (System.nanoTime()-start)/1000000);
 						if(qsFactors == null) {
+							System.err.println("QSFACTORS");
 							return null;
 						}
 						for(BigInteger factor : qsFactors) {
