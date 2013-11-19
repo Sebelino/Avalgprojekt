@@ -1,4 +1,4 @@
 Avalgprojekt
 ============
 
-Repository för avancerade-algoritmer-kursen
+Repository för avancerade-algoritmer-kursen.
