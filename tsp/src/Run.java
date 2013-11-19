@@ -25,15 +25,15 @@ public class Run{
         return null;
     }
 
-    public double[][] read(){
+    public float[][] read(){
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        double[][] input = null;
+        float[][] input = null;
         try{
             if(br.ready()){
                 String line = br.readLine();
                 if(line.length() > 0){
                     int numberOfPoints = Integer.parseInt(line);
-			        input = new double[numberOfPoints][2];
+			        input = new float[numberOfPoints][2];
                 }else{
                 	throw new RuntimeException("The first line in the input was empty!");
                 }
@@ -67,6 +67,7 @@ public class Run{
 
 	public static void main(String[] args){
 		Run run = new Run();
+		float[][] input = run.read();
         Algorithm algorithm = null;
         try{
             algorithm = run.getAlgorithm(args);
@@ -74,7 +75,6 @@ public class Run{
             algorithm = new Christofides();
         }
         System.err.println("Using "+algorithm.getClass().getName());
-		double[][] input = run.read();
 		int[] tour = algorithm.tour(input);
 		run.check();
 		run.printTour(tour);

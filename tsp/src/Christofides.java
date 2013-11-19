@@ -3,8 +3,17 @@
  * @author Sebastian Olsson
  */
 public class Christofides extends Algorithm{
+	Graph graph;
+	
+	public Christofides(){}
 
-	public int[] tour(double[][] instance){
+	private void initGraph(float[][] instance){
+		graph = new Graph(instance);
+		System.err.println(graph);
+	}
+
+	public int[] tour(float[][] instance){
+		initGraph(instance);
 		int[] tour = new int[instance.length];
 		for(int i = 0;i < tour.length;i++){
 			tour[i] = i;

@@ -7,5 +7,5 @@ public abstract class Algorithm{
      * @return The tour, represented as a permutation of the set {1,...,n}.
      * @param instance A set of (x,y) points, where instance[i] is the ith point.
      */
-    public abstract int[] tour(double[][] instance);
+    public abstract int[] tour(float[][] instance);
 }
