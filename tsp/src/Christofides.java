@@ -18,6 +18,7 @@ public class Christofides extends Algorithm{
 		for(int i = 0;i < tour.length;i++){
 			tour[i] = i;
 		}
+		System.err.println(graph.mst());
 		return tour;
 	}
 }
