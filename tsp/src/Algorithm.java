@@ -30,10 +30,13 @@ public abstract class Algorithm{
         frame.setVisible(true); 
     }
     
-    /** Redraw the canvas. */
-    protected void updateVisualization(int[] currSol){
+    /**
+     * Redraw the canvas.
+     * @param currSol A tour, where (i,tour[i]) is an edge.
+     **/
+    protected void updateVisualization(int[] tour){
     	if(visualize){
-    		visualizer.updateSol(currSol);
+    		visualizer.updateSol(tour);
     		visualizer.repaint();
     	}
     }
