@@ -6,7 +6,7 @@ public class Visualizer extends JPanel{
 	int w;
 	int h;
 
-	int[][] currSol;
+	int[] currSol;
 	float[][] coords;
 
 	// Create a constructor method
@@ -62,18 +62,30 @@ public class Visualizer extends JPanel{
 	public void drawSolution(Graphics g) {
 		if(coords != null) {
 			for(int i = 0;i<coords.length;i++) {
-				g.drawRect((int) coords[i][0], (int) coords[i][1], 4, 4);
+				//g.drawRect((int) coords[i][0], (int) coords[i][1], 4, 4);
+				g.drawString(""+i,(int) coords[i][0], (int) coords[i][1]);
 			}
 		}
 
 		if(currSol != null) {
+			int v = 0;
 			for(int i = 0;i<currSol.length;i++) {
-				g.drawLine((int) coords[i][0], (int) coords[i][1], (int) coords[currSol[i][0]][0], (int) coords[currSol[i][0]][1]);
+				int x1 = (int)coords[v][0];
+				int y1 = (int)coords[v][1];
+				int x2 = (int)coords[currSol[i]][0];
+				int y2 = (int)coords[currSol[i]][1];
+				g.drawLine(x1,y1,x2,y2);
+				v = currSol[i];
 			}
+			g.drawLine((int)coords[currSol.length-1][0],(int)coords[currSol.length-1][1],
+					(int)coords[0][0],(int)coords[0][1]);
 		}
 	}
 
-	public void updateSol(int[][] currSolution) {
+	public void updateSol(int[] currSolution) {
+		for(int i = 0;i < currSolution.length;i++){
+			System.err.println(currSolution[i]);
+		}
 		currSol = currSolution;
 	}
 

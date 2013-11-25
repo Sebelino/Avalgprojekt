@@ -13,12 +13,14 @@ public class Christofides extends Algorithm{
 	}
 
 	public int[] tour(float[][] instance){
+		initGraphics(instance);
 		initGraph(instance);
 		int[] tour = new int[instance.length];
 		for(int i = 0;i < tour.length;i++){
 			tour[i] = i;
 		}
 		System.err.println(graph.mst());
+		updateVisualization(tour);
 		return tour;
 	}
 }

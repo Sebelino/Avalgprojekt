@@ -35,7 +35,7 @@ import javax.swing.JFrame;
 public class SA {
 	private static final int START_T = 50;
 	private static final int INNER_ITERS = 50;
-	private static final boolean VISUALIZE = false;
+	private static final boolean VISUALIZE = true;
 	
 	private static double constant; // determined in parseInput
 	
@@ -91,7 +91,11 @@ public class SA {
 	
 	private static void updateVisualization(int[][] currSol) {
 		if(VISUALIZE) {
-			vis.updateSol(currSol);
+			int[] vertices = new int[currSol.length];
+			for(int i = 0;i < vertices.length;i++){
+				vertices[i] = currSol[i][0];
+			}
+			vis.updateSol(vertices);
 			vis.repaint();
 		}
 	}
