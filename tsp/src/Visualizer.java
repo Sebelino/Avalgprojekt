@@ -1,13 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
-
+import java.awt.geom.Point2D;
+import java.awt.geom.Line2D;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Visualizer extends JPanel{
-	int w;
-	int h;
-
-	int[] currSol;
-	float[][] coords;
+	private final int w; /* Window width */
+	private final int h; /* Window height */
+	private final Point[] coords; // :: VertexName -> Point
+	private final List<Set<Line2D>> solutions;
 
 	// Create a constructor method
 	public Visualizer(float[][] coords, int frameWidth, int frameHeight){
@@ -15,10 +20,11 @@ public class Visualizer extends JPanel{
 		w = frameWidth;
 		h = frameHeight;
 		this.coords = graphCoords(coords);
+		solutions = new ArrayList<Set<Line2D>>();
 	}
 
-	public float[][] graphCoords(float[][] coords) {
-		float[][] gCoords = new float[coords.length][2];
+	public Point[] graphCoords(float[][] coords) {
+		Point[] gCoords = new Point[coords.length];
 
 		float minX = Float.MAX_VALUE;
 		float maxX = -Float.MIN_VALUE;
@@ -40,14 +46,14 @@ public class Visualizer extends JPanel{
 			}
 		}
 		
-		
-		
 		float xInterval = maxX - minX;
 		float yInterval = maxY - minY;
 		
 		for(int i = 0;i<coords.length;i++) {
-			gCoords[i][0] = 100 + (coords[i][0]-minX)/xInterval*(w-200);
-			gCoords[i][1] = 100 + (coords[i][1]-minY)/yInterval*(h-200);
+			gCoords[i] = new Point(
+				(int)(100+(coords[i][0]-minX)/xInterval*(w-200)),
+		        (int)(100+(coords[i][1]-minY)/yInterval*(h-200))
+			);
 		}
 		
 		return gCoords;
@@ -63,18 +69,28 @@ public class Visualizer extends JPanel{
 		if(coords != null) {
 			for(int i = 0;i<coords.length;i++) {
 				//g.drawRect((int) coords[i][0], (int) coords[i][1], 4, 4);
-				g.drawString(""+i,(int) coords[i][0], (int) coords[i][1]);
+				g.drawString(""+i,(int) coords[i].x, (int) coords[i].y);
 			}
 		}
-		if(currSol != null) {
-			for(int i = 0;i<currSol.length;i++) {
-				g.drawLine((int)coords[i][0],(int)coords[i][1],(int)coords[currSol[i]][0],(int)coords[currSol[i]][1]);
+		if(!solutions.isEmpty()) {
+			Set<Line2D> currentSolution = solutions.get(solutions.size()-1);
+			Iterator<Line2D> it = currentSolution.iterator();
+			while(it.hasNext()) {
+				Line2D line = it.next();
+				g.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 			}
 		}
 	}
 
 	public void updateSol(int[] currSolution) {
-		currSol = currSolution;
+		Set<Line2D> newSolution = new HashSet<Line2D>();
+		for(int v = 0;v < currSolution.length;v++){
+			int w = currSolution[v];
+			Point p1 = coords[v];
+			Point p2 = coords[w];
+			newSolution.add(new Line2D.Float(p1,p2));
+		}
+		solutions.add(newSolution);
 	}
 
 	//	public static void main(String arg[]){

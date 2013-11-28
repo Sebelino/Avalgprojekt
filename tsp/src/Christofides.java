@@ -1,6 +1,3 @@
-import java.util.Arrays;
-import java.util.ArrayList;
-
 /**
  * The Christofides approximation algorithm. Should give an answer with approximation factor 1.5.
  * @author Sebastian Olsson
@@ -22,8 +19,11 @@ public class Christofides extends Algorithm{
 		for(int i = 0;i < tour.length;i++){
 			tour[i] = i;
 		}
-		System.err.println(graph.mst());
 		updateVisualization(tourToCycle(tour));
+		Graph mst = graph.mst();
+		System.err.println(mst);
+		Graph oddGraph = mst.oddDegreeGraph();
+		System.err.println(oddGraph);
 		return tour;
 	}
 	

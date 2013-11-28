@@ -8,6 +8,7 @@ import java.util.HashSet;
  */
 public class Graph{
 	private float[][] points; /* (points[i][0],points[i][1]) is the ith point. */
+	private final Set<Integer> vertices;
 	private final int[][] adjacencyMatrix; /* -1 if no edge. */
 	public final boolean complete;
 	public final int order; /* Number of vertices. */
@@ -20,9 +21,11 @@ public class Graph{
 		order = points.length;
 		size = Math.max(order-1,0)*(order-1);
 		this.points = new float[order][2];
+		vertices = new HashSet<Integer>();
 		for(int i = 0;i < order;i++){
 			this.points[i][0] = points[i][0];
 			this.points[i][1] = points[i][1];
+			vertices.add(i);
 		}
 		/* Initialize adjacency matrix */
 		adjacencyMatrix = new int[order][order];
@@ -38,6 +41,7 @@ public class Graph{
 		order = weights.length;
 		size = edges.length;
 		complete = size == Math.max(order-1,0)*(order-1);
+		vertices = new HashSet<Integer>();
 		/* Initialize adjacency matrix */
 		adjacencyMatrix = new int[order][order];
 		for(int p1 = 0;p1 < order;p1++){
@@ -47,6 +51,8 @@ public class Graph{
 		}
 		for(int[] edge : edges){
 			setDistance(edge,weights[edge[0]][edge[1]]);
+			vertices.add(edge[0]);
+			vertices.add(edge[1]);
 		}
 	}
 
@@ -86,6 +92,48 @@ public class Graph{
 		}
 		Graph mst = new Graph(edges,adjacencyMatrix);
 		return mst;
+	}
+
+	/** @return The same graph, but with even-degree vertices removed. */
+	public Graph oddDegreeGraph(){
+		Set<Integer> vertices = new HashSet<Integer>();
+		for(int v = 0;v < order;v++){
+			if(degree(v) % 2 == 1){
+				vertices.add(v);
+			}
+		}
+		List<int[]> edges = new ArrayList<int[]>();
+		int[][] weights = new int[order][order];
+		int edgeCtr = 0;
+		System.err.println(vertices);
+		for(int p1 = 0;p1 < order;p1++){
+			for(int p2 = 0;p2 < order;p2++){
+				if(vertices.contains(p1) && vertices.contains(p2)){
+					weights[p1][p2] = adjacencyMatrix[p1][p2];
+					edges.add(new int[2]);
+					edges.get(edgeCtr)[0] = p1;
+					edges.get(edgeCtr)[1] = p2;
+					edgeCtr++;
+				}else{
+					weights[p1][p2] = -1;
+				}
+			}
+		}
+		int[][] arrayEdges = new int[edges.size()][2];
+		for(int i = 0;i < arrayEdges.length;i++){
+			arrayEdges[i] = edges.get(i);
+		}
+		return new Graph(arrayEdges,weights);
+	}
+
+	public int degree(int v){
+		int deg = 0;
+		for(int d : adjacencyMatrix[v]){
+			if(d >= 0){
+				deg++;
+			}
+		}
+		return deg;
 	}
 
 	/** @return The Euclidean distance between p1 and p2. */
