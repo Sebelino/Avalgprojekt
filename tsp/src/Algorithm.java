@@ -21,15 +21,27 @@ public abstract class Algorithm{
     /** Turn visualization on. Should be called before
      * computing the tour and before calling updateVisualization. */
     protected void initGraphics(float[][] coordinates){
+    	initGraphics(coordinates,"");
+    }
+  
+    /** Turn visualization on. Should be called before
+     * computing the tour and before calling updateVisualization. */
+    protected void initGraphics(float[][] coordinates,String vis){
+        final short dimen = 600;
+        if(vis.equalsIgnoreCase("christofides")){
+	        visualizer = new ChristofidesVisualizer(coordinates,dimen,dimen);
+        }else{
+	        visualizer = new Visualizer(coordinates,dimen,dimen);
+        }
+        visualize = true;
+
 		JFrame frame = new JFrame("BasicPanel");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600,600);
-        visualizer = new Visualizer(coordinates, 600, 600);
-        visualize = true;
+        frame.setSize(dimen,dimen);
         frame.setContentPane(visualizer);
         frame.setVisible(true); 
     }
-    
+  
     /**
      * Redraw the canvas.
      * @param currSol A tour, where (i,tour[i]) is an edge.

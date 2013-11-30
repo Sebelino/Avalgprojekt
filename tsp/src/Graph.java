@@ -1,7 +1,8 @@
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * An undirected graph with non-negative weights.
  * @author Sebastian Olsson
@@ -53,6 +54,12 @@ public class Graph{
 			setDistance(edge,weights[edge[0]][edge[1]]);
 			vertices.add(edge[0]);
 			vertices.add(edge[1]);
+		}
+		/* Behövs enbart till visualizern. */
+		this.points = new float[order][2];
+		for(int i = 0;i < order;i++){
+			this.points[i][0] = points[i][0];
+			this.points[i][1] = points[i][1];
 		}
 	}
 
@@ -159,6 +166,23 @@ public class Graph{
 	}
 	private void setDistance(int[] edge,int distance){
 		setDistance(edge[0],edge[1],distance);
+	}
+
+	// TODO: dynprog
+	/** @return a set of lines that this graph consists of. */
+	public int[][] edges(){
+		int[][] edges = new int[size][2];
+		int ctr = 0;
+		for(int v = 0;v < order;v++){
+			for(int w = 0;w <= v;w++){
+				if(adjacencyMatrix[v][w] > 0){
+					edges[ctr][0] = v;
+					edges[ctr][1] = w;
+					ctr++;
+				}
+			}
+		}
+		return edges;
 	}
 
 	@Override

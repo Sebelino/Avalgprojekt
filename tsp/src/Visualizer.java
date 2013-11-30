@@ -1,6 +1,6 @@
 import javax.swing.*;
+
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.geom.Line2D;
 import java.util.Set;
 import java.util.HashSet;
@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+@SuppressWarnings("serial")
 public class Visualizer extends JPanel{
-	private final int w; /* Window width */
-	private final int h; /* Window height */
-	private final Point[] coords; // :: VertexName -> Point
-	private final List<Set<Line2D>> solutions;
+	protected final int w; /* Window width */
+	protected final int h; /* Window height */
+	protected final Point[] coords; // :: VertexName -> Point
+	protected final List<Set<Line2D>> solutions;
 
 	// Create a constructor method
 	public Visualizer(float[][] coords, int frameWidth, int frameHeight){
@@ -23,7 +24,7 @@ public class Visualizer extends JPanel{
 		solutions = new ArrayList<Set<Line2D>>();
 	}
 
-	public Point[] graphCoords(float[][] coords) {
+	protected Point[] graphCoords(float[][] coords) {
 		Point[] gCoords = new Point[coords.length];
 
 		float minX = Float.MAX_VALUE;
@@ -66,20 +67,26 @@ public class Visualizer extends JPanel{
 	}
 
 	public void drawSolution(Graphics g) {
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.setStroke(new BasicStroke(1,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
 		if(coords != null) {
 			for(int i = 0;i<coords.length;i++) {
-				//g.drawRect((int) coords[i][0], (int) coords[i][1], 4, 4);
-				g.drawString(""+i,(int) coords[i].x, (int) coords[i].y);
+				g2d.drawString(""+i,(int) coords[i].x+5, (int) coords[i].y+5);
 			}
 		}
+		g2d.setColor(Color.RED);
 		if(!solutions.isEmpty()) {
 			Set<Line2D> currentSolution = solutions.get(solutions.size()-1);
 			Iterator<Line2D> it = currentSolution.iterator();
 			while(it.hasNext()) {
 				Line2D line = it.next();
-				g.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
+				g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 			}
 		}
+		g2d.setColor(Color.BLACK);
 	}
 
 	public void updateSol(int[] currSolution) {
