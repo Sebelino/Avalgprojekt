@@ -1,6 +1,5 @@
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -8,26 +7,21 @@ import java.util.Set;
  * @author Sebastian Olsson
  */
 public class Graph{
-	private float[][] points; /* (points[i][0],points[i][1]) is the ith point. */
-	private final Set<Integer> vertices;
-	private final int[][] adjacencyMatrix; /* -1 if no edge. */
+	private float[][] points; /* (points[i][0],points[i][1]) is the point for vertex vertices[i]. */
+	private final int[] vertices; /* :: Index -> ID. Sorted. */
+	private final int[][] adjacencyMatrix; /* adjacencyMatrix[i][j] == distance(vertices[i],vertices[j]) */
 	public final boolean complete;
 	public final int order; /* Number of vertices. */
 	public final int size; /* Number of edges. */
 
 	// TODO: Futtig shallow copy-optimering.
 	/** Constructs a complete graph from a set of Euclidean points. */
-	public Graph(final float[][] points){
+	public Graph(final float[][] points,int[] vertices){
 		complete = true;
-		order = points.length;
-		size = Math.max(order-1,0)*(order-1);
-		this.points = new float[order][2];
-		vertices = new HashSet<Integer>();
-		for(int i = 0;i < order;i++){
-			this.points[i][0] = points[i][0];
-			this.points[i][1] = points[i][1];
-			vertices.add(i);
-		}
+		order = vertices.length;
+		size = Math.max(0,order*(order-1)/2);
+		this.vertices = vertices;
+		this.points = points;
 		/* Initialize adjacency matrix */
 		adjacencyMatrix = new int[order][order];
 		for(int p1 = 0;p1 < order;p1++){
@@ -36,13 +30,15 @@ public class Graph{
 			}
 		}
 	}
+	public Graph(final float[][] points){
+		this(points,Util.ring(points.length));
+	}
 
 	/** Constructs a spanning tree from the edges and matrix of weights. */
-	public Graph(int[][] edges,int[][] weights){
+	public Graph(float[][] points,int[][] edges,int[][] weights,int[] vertices){
 		order = weights.length;
 		size = edges.length;
 		complete = size == Math.max(order-1,0)*(order-1);
-		vertices = new HashSet<Integer>();
 		/* Initialize adjacency matrix */
 		adjacencyMatrix = new int[order][order];
 		for(int p1 = 0;p1 < order;p1++){
@@ -52,15 +48,9 @@ public class Graph{
 		}
 		for(int[] edge : edges){
 			setDistance(edge,weights[edge[0]][edge[1]]);
-			vertices.add(edge[0]);
-			vertices.add(edge[1]);
 		}
-		/* Behövs enbart till visualizern. */
-		this.points = new float[order][2];
-		for(int i = 0;i < order;i++){
-			this.points[i][0] = points[i][0];
-			this.points[i][1] = points[i][1];
-		}
+		this.vertices = vertices;
+		this.points = points;
 	}
 
 	/** @return The minimal spanning tree of this graph. */
@@ -78,12 +68,12 @@ public class Graph{
 		int[][] edges = new int[order-1][2];
 		Set<Integer> vertices = new HashSet<Integer>();
 		vertices.add(vertex);
-		int edgeCtr = 0;
-		while(vertices.size() != order){
+		for(int edgeCtr = 0;edgeCtr < edges.length;edgeCtr++){
 			int[] candidateVertex = new int[2];
 			int candidateDistance = Integer.MAX_VALUE;
 			for(int v : vertices){
 				for(int w : neighbors(v)){
+					// TODO
 					if(!vertices.contains(w) && adjacencyMatrix[v][w] < candidateDistance){
 						candidateVertex[0] = v;
 						candidateVertex[1] = w;
@@ -92,45 +82,37 @@ public class Graph{
 				}
 			}
 			vertices.add(candidateVertex[1]);
-			System.err.println("erst"+vertices+"cand="+candidateVertex[1]);
 			edges[edgeCtr][0] = candidateVertex[0];
 			edges[edgeCtr][1] = candidateVertex[1];
-			edgeCtr++;
 		}
-		Graph mst = new Graph(edges,adjacencyMatrix);
+		// I hate primitive types in Java.
+		int[] verticesArray = new int[vertices.size()];
+		Integer[] verticesList = Arrays.copyOf(vertices.toArray(),vertices.size(),Integer[].class);
+		for(int v = 0;v < vertices.size();v++){
+			verticesArray[v] = verticesList[v];
+		}
+		System.err.println("creating mst");
+		Graph mst = new Graph(points,edges,adjacencyMatrix,verticesArray);
 		return mst;
 	}
 
-	/** @return The same graph, but with even-degree vertices removed. */
+	/**
+	 * @return The complete graph that is given when forming an edge between each pair
+	 * of odd-degreed vertices.
+	 */
 	public Graph oddDegreeGraph(){
-		Set<Integer> vertices = new HashSet<Integer>();
-		for(int v = 0;v < order;v++){
-			if(degree(v) % 2 == 1){
-				vertices.add(v);
+		Set<Integer> oddVertices = new HashSet<Integer>();
+		for(int i = 0;i < order;i++){
+			if(degree(i) % 2 == 1){
+				oddVertices.add(vertices[i]);
 			}
 		}
-		List<int[]> edges = new ArrayList<int[]>();
-		int[][] weights = new int[order][order];
-		int edgeCtr = 0;
-		System.err.println(vertices);
-		for(int p1 = 0;p1 < order;p1++){
-			for(int p2 = 0;p2 < order;p2++){
-				if(vertices.contains(p1) && vertices.contains(p2)){
-					weights[p1][p2] = adjacencyMatrix[p1][p2];
-					edges.add(new int[2]);
-					edges.get(edgeCtr)[0] = p1;
-					edges.get(edgeCtr)[1] = p2;
-					edgeCtr++;
-				}else{
-					weights[p1][p2] = -1;
-				}
-			}
+		int[] verticesArray = new int[oddVertices.size()];
+		Integer[] verticesList = Arrays.copyOf(oddVertices.toArray(),oddVertices.size(),Integer[].class);
+		for(int v = 0;v < oddVertices.size();v++){
+			verticesArray[v] = verticesList[v];
 		}
-		int[][] arrayEdges = new int[edges.size()][2];
-		for(int i = 0;i < arrayEdges.length;i++){
-			arrayEdges[i] = edges.get(i);
-		}
-		return new Graph(arrayEdges,weights);
+		return new Graph(points,verticesArray);
 	}
 
 	public int degree(int v){
@@ -171,13 +153,14 @@ public class Graph{
 	// TODO: dynprog
 	/** @return a set of lines that this graph consists of. */
 	public int[][] edges(){
+		System.err.println(order+"o,s"+size);
 		int[][] edges = new int[size][2];
 		int ctr = 0;
-		for(int v = 0;v < order;v++){
-			for(int w = 0;w <= v;w++){
-				if(adjacencyMatrix[v][w] > 0){
-					edges[ctr][0] = v;
-					edges[ctr][1] = w;
+		for(int i = 0;i < order;i++){
+			for(int j = 0;j <= i;j++){
+				if(adjacencyMatrix[i][j] > 0){
+					edges[ctr][0] = vertices[i];
+					edges[ctr][1] = vertices[j];
 					ctr++;
 				}
 			}

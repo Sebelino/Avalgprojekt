@@ -5,12 +5,12 @@
 public class Christofides extends Algorithm{
 	Graph graph;
 	Graph mst;
+	Graph oddGraph;
 	
 	public Christofides(){}
 
 	private void initGraph(float[][] instance){
 		graph = new Graph(instance);
-		mst = graph.mst();
 		System.err.println(graph);
 	}
 
@@ -21,10 +21,11 @@ public class Christofides extends Algorithm{
 		for(int i = 0;i < tour.length;i++){
 			tour[i] = i;
 		}
-		updateVisualization(tourToCycle(tour));
+		mst = graph.mst();
 		System.err.println("mst=\n"+mst);
-		Graph oddGraph = mst.oddDegreeGraph();
+		oddGraph = mst.oddDegreeGraph();
 		System.err.println("oddgraph=\n"+oddGraph);
+		updateVisualization(tourToCycle(tour));
 		return tour;
 	}
 	
@@ -48,6 +49,7 @@ public class Christofides extends Algorithm{
     	if(visualize){
     		visualizer.updateSol(tour);
     		((ChristofidesVisualizer)visualizer).updateMST(mst);
+    		((ChristofidesVisualizer)visualizer).updateOddGraph(oddGraph);
     		visualizer.repaint();
     	}
     }

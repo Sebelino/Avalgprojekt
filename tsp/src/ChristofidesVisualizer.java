@@ -12,10 +12,12 @@ import java.util.Set;
 @SuppressWarnings("serial")
 public class ChristofidesVisualizer extends Visualizer{
 	private Set<Line2D> mst;
+	private Set<Line2D> oddEdges;
 	
 	public ChristofidesVisualizer(float[][] coords,int frameWidth,int frameHeight){
 		super(coords,frameWidth,frameHeight);
 		mst = new HashSet<Line2D>();
+		oddEdges = new HashSet<Line2D>();
 	}
 
 	@Override
@@ -28,6 +30,13 @@ public class ChristofidesVisualizer extends Visualizer{
 		g2d.setColor(Color.BLUE);
 
 		Iterator<Line2D> it = mst.iterator();
+		while(it.hasNext()) {
+			Line2D line = it.next();
+			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
+		}
+		g2d.setStroke(new BasicStroke(1,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		g2d.setColor(Color.GREEN);
+		it = oddEdges.iterator();
 		while(it.hasNext()) {
 			Line2D line = it.next();
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
@@ -46,6 +55,23 @@ public class ChristofidesVisualizer extends Visualizer{
 			Point2D p1 = coords[v];
 			Point2D p2 = coords[w];
 			mst.add(new Line2D.Float(p1,p2));
+		}
+	}
+
+	public void updateOddGraph(Graph oddGraph){
+		oddEdges = new HashSet<Line2D>();
+		if(oddGraph == null){
+			return;
+		}
+		for(int[] e : oddGraph.edges()){
+			System.err.println("oddedges="+e[0]+","+e[1]);
+		}
+		for(int[] edge : oddGraph.edges()){
+			int v = edge[0];
+			int w = edge[1];
+			Point2D p1 = coords[v];
+			Point2D p2 = coords[w];
+			oddEdges.add(new Line2D.Float(p1,p2));
 		}
 	}
 }
