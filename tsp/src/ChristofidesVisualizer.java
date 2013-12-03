@@ -35,7 +35,7 @@ public class ChristofidesVisualizer extends Visualizer{
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 		}
 		g2d.setStroke(new BasicStroke(1,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-		g2d.setColor(Color.GREEN);
+		g2d.setColor(Color.RED);
 		it = oddEdges.iterator();
 		while(it.hasNext()) {
 			Line2D line = it.next();

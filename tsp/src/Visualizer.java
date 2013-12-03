@@ -77,13 +77,15 @@ public class Visualizer extends JPanel{
 				g2d.drawString(""+i,(int) coords[i].x+5, (int) coords[i].y+5);
 			}
 		}
-		g2d.setColor(Color.RED);
+		g2d.setColor(Color.GREEN);
 		if(!solutions.isEmpty()) {
 			Set<Line2D> currentSolution = solutions.get(solutions.size()-1);
 			Iterator<Line2D> it = currentSolution.iterator();
+			System.err.println("sol");
 			while(it.hasNext()) {
 				Line2D line = it.next();
 				g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
+				System.err.println((int)line.getX1()+","+(int)line.getY1()+","+(int)line.getX2()+","+(int)line.getY2());
 			}
 		}
 		g2d.setColor(Color.BLACK);

@@ -47,10 +47,22 @@ public class Christofides extends Algorithm{
 	@Override
     protected void updateVisualization(int[] tour){
     	if(visualize){
-    		visualizer.updateSol(tour);
+//    		repaint(1500);
+//    		visualizer.updateSol(tour);
+    		repaint(1500);
     		((ChristofidesVisualizer)visualizer).updateMST(mst);
+    		repaint(1500);
     		((ChristofidesVisualizer)visualizer).updateOddGraph(oddGraph);
-    		visualizer.repaint();
+    		repaint(1500);
     	}
     }
+	
+	private void repaint(long time){
+		try {
+			Thread.sleep(time);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		visualizer.repaint();
+	}
 }
