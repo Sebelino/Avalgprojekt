@@ -1,5 +1,8 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -38,7 +41,7 @@ public class Graph{
 	public Graph(float[][] points,int[][] edges,int[][] weights,int[] vertices){
 		order = weights.length;
 		size = edges.length;
-		complete = size == Math.max(order-1,0)*(order-1);
+		complete = size == Math.max(0,order*(order-1)/2);
 		/* Initialize adjacency matrix */
 		adjacencyMatrix = new int[order][order];
 		for(int p1 = 0;p1 < order;p1++){
@@ -51,6 +54,29 @@ public class Graph{
 		}
 		this.vertices = vertices;
 		this.points = points;
+	}
+
+	/** Constructs a matching, where (vertices[i],vertices[i+1]) is an edge for each even i. */
+	public Graph(float[][] points,int[] vertices,int totalDistance){
+		this.vertices = vertices;
+		this.points = points;
+		order = vertices.length;
+		size = Math.max(0,order*(order-1)/2);
+		complete = size == Math.max(order-1,0)*(order-1);
+		/* Initialize adjacency matrix */
+		adjacencyMatrix = new int[order][order];
+		for(int p1 = 0;p1 < order;p1++){
+			for(int p2 = 0;p2 < order;p2++){
+				adjacencyMatrix[p1][p2] = -1;
+			}
+		}
+		for(int i = 0;i < order;i += 2){
+			int v = i;
+			int w = i+1;
+			adjacencyMatrix[v][w] = distance(points[v],points[w]);
+			adjacencyMatrix[w][v] = adjacencyMatrix[v][w];
+			setDistance(v,w,distance(points[v],points[w]));
+		}
 	}
 
 	/** @return The minimal spanning tree of this graph. */
@@ -125,6 +151,42 @@ public class Graph{
 		return deg;
 	}
 
+	/**
+	 * @return A perfect matching whose sum weight is minimal.
+	 * @throws RuntimeException if no perfect matching exists.
+	 */
+	public Graph minimalPerfectMatching(){
+		if(order % 2 != 0){
+			throw new RuntimeException("Order is odd!");
+		}
+		List<Integer> candidateMatching = new ArrayList<Integer>(); /* (cm[0],cm[1]),... */
+		int candidateDistance = Integer.MAX_VALUE;
+		Permutations pi = new Permutations(vertices);
+		Iterator<List<Integer>> it = pi.iterator();
+		while(it.hasNext()){
+			List<Integer> permutation = it.next();
+			System.err.println("perm="+permutation);
+			int totalDistance = 0;
+			for(int i = 0;i < order;i += 2){
+				final int v = permutation.get(i);
+				final int w = permutation.get(i+1);
+				final int distance = adjacencyMatrix[idToIndex(v)][idToIndex(w)];
+				totalDistance += distance;
+			}
+			if(totalDistance < candidateDistance){
+				candidateDistance = totalDistance;
+				candidateMatching = new ArrayList<Integer>(permutation);
+			}
+		}
+		System.err.println("done"+candidateMatching);
+		int[] perfectMatchingArray = new int[order];
+		for(int i = 0;i < order;i++){
+			perfectMatchingArray[i] = candidateMatching.get(i);
+		}
+		Graph matching = new Graph(points,perfectMatchingArray,candidateDistance);
+		return matching;
+	}
+
 	/** @return The Euclidean distance between p1 and p2. */
 	private int distance(float[] p1,float[] p2){
 		return (int)(0.5+Math.sqrt((p2[0]-p1[0])*(p2[0]-p1[0])+(p2[1]-p1[1])*(p2[1]-p1[1])));
@@ -166,6 +228,11 @@ public class Graph{
 			}
 		}
 		return edges;
+	}
+
+	/* The inverse to the vertices array. */
+	public int idToIndex(int id){
+		return Arrays.binarySearch(vertices,id);
 	}
 
 	@Override

@@ -13,11 +13,13 @@ import java.util.Set;
 public class ChristofidesVisualizer extends Visualizer{
 	private Set<Line2D> mst;
 	private Set<Line2D> oddEdges;
+	private Set<Line2D> matching;
 	
 	public ChristofidesVisualizer(float[][] coords,int frameWidth,int frameHeight){
 		super(coords,frameWidth,frameHeight);
 		mst = new HashSet<Line2D>();
 		oddEdges = new HashSet<Line2D>();
+		matching = new HashSet<Line2D>();
 	}
 
 	@Override
@@ -37,6 +39,13 @@ public class ChristofidesVisualizer extends Visualizer{
 		g2d.setStroke(new BasicStroke(1,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 		g2d.setColor(Color.RED);
 		it = oddEdges.iterator();
+		while(it.hasNext()) {
+			Line2D line = it.next();
+			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
+		}
+		g2d.setStroke(new BasicStroke(4,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		g2d.setColor(Color.MAGENTA);
+		it = matching.iterator();
 		while(it.hasNext()) {
 			Line2D line = it.next();
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
@@ -72,6 +81,23 @@ public class ChristofidesVisualizer extends Visualizer{
 			Point2D p1 = coords[v];
 			Point2D p2 = coords[w];
 			oddEdges.add(new Line2D.Float(p1,p2));
+		}
+	}
+
+	public void updateMatchGraph(Graph matchingGraph){
+		matching = new HashSet<Line2D>();
+		if(matchingGraph == null){
+			return;
+		}
+		for(int[] e : matchingGraph.edges()){
+			System.err.println("matchedges="+e[0]+","+e[1]);
+		}
+		for(int[] edge : matchingGraph.edges()){
+			int v = edge[0];
+			int w = edge[1];
+			Point2D p1 = coords[v];
+			Point2D p2 = coords[w];
+			matching.add(new Line2D.Float(p1,p2));
 		}
 	}
 }
