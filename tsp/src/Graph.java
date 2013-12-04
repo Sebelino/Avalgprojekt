@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.swing.JTable.PrintMode;
-
 /**
  * An undirected Euclidean (multi-)graph.
  * @author Sebastian Olsson
@@ -34,7 +32,7 @@ public class Graph{
 		edges = new int[order][order];
 		for(int p1 = 0;p1 < order;p1++){
 			for(int p2 = 0;p2 < order;p2++){
-				adjacencyMatrix[p1][p2] = distance(points[p1],points[p2]);
+				adjacencyMatrix[p1][p2] = distance(points[vertices[p1]],points[vertices[p2]]);
 				edges[p1][p2] = 1;
 			}
 		}
@@ -235,6 +233,7 @@ public class Graph{
 		int candidateDistance = Integer.MAX_VALUE;
 		Permutations pi = new Permutations(vertices);
 		Iterator<List<Integer>> it = pi.iterator();
+		System.err.println("vertices");
 		while(it.hasNext()){
 			List<Integer> permutation = it.next();
 			int totalDistance = 0;
@@ -244,7 +243,7 @@ public class Graph{
 				final int distance = adjacencyMatrix[idToIndex(v)][idToIndex(w)];
 				totalDistance += distance;
 			}
-			System.err.println("perm="+permutation+" total="+totalDistance+" cd="+candidateDistance);
+//			System.err.print("perm="+permutation+" total="+totalDistance+" cd="+candidateDistance);
 			if(totalDistance < candidateDistance){
 				candidateDistance = totalDistance;
 				candidateMatching = new ArrayList<Integer>(permutation);

@@ -30,7 +30,7 @@ public class ChristofidesVisualizer extends Visualizer{
 	public void drawSolution(Graphics g) {
 		super.drawSolution(g);
 		Graphics2D g2d = (Graphics2D)g;
-		g2d.setStroke(new BasicStroke(4,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		g2d.setStroke(new BasicStroke(8,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g2d.setColor(Color.BLUE);
@@ -47,7 +47,7 @@ public class ChristofidesVisualizer extends Visualizer{
 			Line2D line = it.next();
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 		}
-		g2d.setStroke(new BasicStroke(7,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		g2d.setStroke(new BasicStroke(9,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 		g2d.setColor(Color.RED);
 		it = matching.iterator();
 		while(it.hasNext()) {
@@ -61,7 +61,7 @@ public class ChristofidesVisualizer extends Visualizer{
 			Line2D line = it.next();
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 		}
-		g2d.setStroke(new BasicStroke(3,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		g2d.setStroke(new BasicStroke(10,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 		g2d.setColor(Color.BLACK);
 		it = hamilton.iterator();
 		while(it.hasNext()) {

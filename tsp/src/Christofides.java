@@ -76,19 +76,19 @@ public class Christofides extends Algorithm{
 	@Override
     protected void updateVisualization(int[] tour){
     	if(visualize){
-//    		repaint(1000);
+//    		repaint(1500);
 //    		visualizer.updateSol(tour);
-    		repaint(1000);
+    		repaint(1500);
     		((ChristofidesVisualizer)visualizer).updateMST(mst);
-    		repaint(1000);
+    		repaint(1500);
     		((ChristofidesVisualizer)visualizer).updateOddGraph(oddGraph);
-    		repaint(1000);
+    		repaint(1500);
     		((ChristofidesVisualizer)visualizer).updateMatchGraph(match);
-    		repaint(1000);
+    		repaint(1500);
     		((ChristofidesVisualizer)visualizer).updateMultiGraph(multigraph);
-    		repaint(1000);
+    		repaint(1500);
     		((ChristofidesVisualizer)visualizer).updateHamiltonGraph(hamiltoncycle);
-    		repaint(1000);
+    		repaint(1500);
     	}
     }
 	
