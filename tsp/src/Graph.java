@@ -115,9 +115,6 @@ public class Graph{
 			}
 			map[i] = v;
 		}
-		Util.printArray(g1.vertices);
-		Util.printArray(g2.vertices);
-		Util.printArray(map);
 		for(int i = 0;i < order;i++){
 			for(int j = 0;j < order;j++){
 				edges[i][j] = g1.edges[i][j];
@@ -128,7 +125,6 @@ public class Graph{
 			for(int j = 0;j < g2.order;j++){
 				if(g2.edges[i][j] > 0){
 					edges[map[i]][map[j]] += g2.edges[i][j];
-					System.err.println("setting "+map[i]+","+map[j]+" -> "+g2.adjacencyMatrix[i][j]);
 					adjacencyMatrix[map[i]][map[j]] = g2.adjacencyMatrix[i][j];
 				}
 			}
@@ -241,6 +237,41 @@ public class Graph{
 		}
 		Graph matching = new Graph(points,perfectMatchingArray,candidateDistance);
 		return matching;
+	}
+
+	/** @return A corresponding Hamiltonian cycle if this graph is an Euclidean circuit. */
+
+	public Graph hamiltonCycle(){
+		int[][] edgeCounts = new int[order][order];
+		for(int i = 0;i < order;i++){
+			for(int j = 0;j < order;j++){
+				edgeCounts[i][j] = edges[i][j];
+			}
+		}
+		List<Integer> euclideanCircuit = new ArrayList<Integer>();
+		euclideanCircuit.add(0);
+		for(int w = 0;w < order;w++){
+			int v = euclideanCircuit.get(euclideanCircuit.size()-1);
+			if(edgeCounts[v][w] > 0){
+				edgeCounts[v][w]--;edgeCounts[w][v]--;
+				euclideanCircuit.add(w);
+				w = 0;
+			}
+		}
+		List<Integer> hamiltonCycle = new ArrayList<Integer>();
+		for(int v : euclideanCircuit){
+			if(!hamiltonCycle.contains(v)){
+				hamiltonCycle.add(v);
+			}
+		}
+		int[][] arcs = new int[hamiltonCycle.size()][2];
+		for(int i = 0;i < hamiltonCycle.size()-1;i++){
+			arcs[i][0] = hamiltonCycle.get(i);
+			arcs[i][1] = hamiltonCycle.get(i+1);
+		}
+		arcs[arcs.length-1][0] = hamiltonCycle.get(hamiltonCycle.size()-1);
+		arcs[arcs.length-1][1] = hamiltonCycle.get(0);
+		return new Graph(this.points,arcs,this.adjacencyMatrix,this.vertices);
 	}
 
 	/** @return The Euclidean distance between p1 and p2. */

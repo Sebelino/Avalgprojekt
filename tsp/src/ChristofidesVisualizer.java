@@ -15,6 +15,7 @@ public class ChristofidesVisualizer extends Visualizer{
 	private Set<Line2D> oddEdges;
 	private Set<Line2D> matching;
 	private Set<Line2D> multigraph;
+	private Set<Line2D> hamilton;
 	
 	public ChristofidesVisualizer(float[][] coords,int frameWidth,int frameHeight){
 		super(coords,frameWidth,frameHeight);
@@ -22,6 +23,7 @@ public class ChristofidesVisualizer extends Visualizer{
 		oddEdges = new HashSet<Line2D>();
 		matching = new HashSet<Line2D>();
 		multigraph = new HashSet<Line2D>();
+		hamilton = new HashSet<Line2D>();
 	}
 
 	@Override
@@ -39,14 +41,14 @@ public class ChristofidesVisualizer extends Visualizer{
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 		}
 		g2d.setStroke(new BasicStroke(1,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-		g2d.setColor(Color.RED);
+		g2d.setColor(Color.ORANGE);
 		it = oddEdges.iterator();
 		while(it.hasNext()) {
 			Line2D line = it.next();
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 		}
 		g2d.setStroke(new BasicStroke(7,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-		g2d.setColor(Color.ORANGE);
+		g2d.setColor(Color.RED);
 		it = matching.iterator();
 		while(it.hasNext()) {
 			Line2D line = it.next();
@@ -55,6 +57,13 @@ public class ChristofidesVisualizer extends Visualizer{
 		g2d.setStroke(new BasicStroke(3,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 		g2d.setColor(Color.BLACK);
 		it = multigraph.iterator();
+		while(it.hasNext()) {
+			Line2D line = it.next();
+			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
+		}
+		g2d.setStroke(new BasicStroke(2,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		g2d.setColor(Color.MAGENTA);
+		it = hamilton.iterator();
 		while(it.hasNext()) {
 			Line2D line = it.next();
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
@@ -124,6 +133,23 @@ public class ChristofidesVisualizer extends Visualizer{
 			Point2D p1 = coords[v];
 			Point2D p2 = coords[w];
 			multigraph.add(new Line2D.Float(p1,p2));
+		}
+	}
+
+	public void updateHamiltonGraph(Graph hamiltonGraph){
+		hamilton = new HashSet<Line2D>();
+		if(hamiltonGraph == null){
+			return;
+		}
+		for(int[] e : hamiltonGraph.edges()){
+			System.err.println("hamiltonedges="+e[0]+","+e[1]);
+		}
+		for(int[] edge : hamiltonGraph.edges()){
+			int v = edge[0];
+			int w = edge[1];
+			Point2D p1 = coords[v];
+			Point2D p2 = coords[w];
+			hamilton.add(new Line2D.Float(p1,p2));
 		}
 	}
 }
