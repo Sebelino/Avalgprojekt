@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Random;
 
 public class Run{
 	private Run(){}
@@ -54,8 +55,14 @@ public class Run{
         return input;
     }
 
-    /** TODO: Verify that the solution is correct (?). */
-    public void check(){
+    private float[][] randomInput(int size){
+    	float[][] input = new float[size][2];
+		Random rand = new Random();
+		for(int i = 0;i < size;i++) {
+			input[i][0] = rand.nextFloat()*2000000-1000000;
+			input[i][1] = rand.nextFloat()*2000000-1000000;
+		}
+		return input;
     }
 
     public void printTour(int[] tour){
@@ -66,7 +73,18 @@ public class Run{
 
 	public static void main(String[] args){
 		Run run = new Run();
-		float[][] input = run.read();
+		float[][] input;
+		if(args.length == 2 && args[0].equalsIgnoreCase("random")){
+			input = run.randomInput(Integer.parseInt(args[1]));
+		}else{
+			input = run.read();
+		}
+		for(int i = 0;i < input.length;i++){
+			for(int j = 0;j < input[i].length;j++){
+				System.out.print(input[i][j]+"\t");
+			}
+			System.out.println();
+		}
         Algorithm algorithm = null;
         try{
             algorithm = run.getAlgorithm(args);
@@ -75,7 +93,6 @@ public class Run{
         }
         System.err.println("Using "+algorithm.getClass().getName());
 		int[] tour = algorithm.tour(input);
-		run.check();
 		run.printTour(tour);
 	}
 }
