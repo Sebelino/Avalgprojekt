@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +15,7 @@ import javax.swing.JTable.PrintMode;
 public class Graph{
 	public float[][] points; /* (points[i][0],points[i][1]) is the point for vertex vertices[i]. */
 	public final int[] vertices; /* :: Index -> ID. Sorted. */
-	public final int[][] adjacencyMatrix; /* adjacencyMatrix[i][j] == distance(vertices[i],vertices[j]) */
+	public int[][] adjacencyMatrix; /* adjacencyMatrix[i][j] == distance(vertices[i],vertices[j]) */
 	public final boolean complete;
 	public final int order; /* Number of vertices. */
 	public final int size; /* Number of edges. */
@@ -42,8 +43,9 @@ public class Graph{
 		this(points,Util.ring(points.length));
 	}
 
+	/* Constructs a spanning tree. */
 	public Graph(float[][] points,int[][] arcs,int[][] weights,int[] vertices){
-		order = weights.length;
+		order = vertices.length;
 		size = arcs.length;
 		complete = size == Math.max(0,order*(order-1)/2);
 		/* Initialize adjacency matrix */
@@ -62,6 +64,26 @@ public class Graph{
 		}
 		this.vertices = vertices;
 		this.points = points;
+	}
+
+	/**
+	 * @param points A set of points in the form {(points[0][0],points[0][1]),...}
+	 * @param arcs arcs[i][j] == The number of arcs from i to j.
+	 * @param vertices A set of vertices.
+	 * @param complete True iff the graph is complete.
+	 */
+	public Graph(float[][] points,int[][] arcs,int[] vertices){
+		this.order = vertices.length;
+		this.size = arcs.length;
+		this.complete = size == Math.max(0,order*(order-1)/2);
+		this.vertices = vertices;
+		edges = new int[order][order];
+		for(int[] arc : arcs){
+			edges[arc[0]][arc[1]] += 1;
+			edges[arc[1]][arc[0]] += 1;
+		}
+		this.points = points;
+		makeAdjacencyMatrix();
 	}
 
 	/** Constructs a matching, where (vertices[i],vertices[i+1]) is an edge for each even i. */
@@ -83,8 +105,6 @@ public class Graph{
 		for(int i = 0;i < order;i += 2){
 			int v = i;
 			int w = i+1;
-			adjacencyMatrix[v][w] = distance(points[v],points[w]);
-			adjacencyMatrix[w][v] = adjacencyMatrix[v][w];
 			setDistance(v,w,distance(points[v],points[w]));
 			edges[v][w] = 1;
 			edges[w][v] = 1;
@@ -240,7 +260,6 @@ public class Graph{
 	}
 
 	/** @return A corresponding Hamiltonian cycle if this graph is an Euclidean circuit. */
-
 	public Graph hamiltonCycle(){
 		int[][] edgeCounts = new int[order][order];
 		for(int i = 0;i < order;i++){
@@ -271,7 +290,13 @@ public class Graph{
 		}
 		arcs[arcs.length-1][0] = hamiltonCycle.get(hamiltonCycle.size()-1);
 		arcs[arcs.length-1][1] = hamiltonCycle.get(0);
-		return new Graph(this.points,arcs,this.adjacencyMatrix,this.vertices);
+		List<Integer> verticesList = new ArrayList<Integer>(hamiltonCycle);
+		Collections.sort(verticesList);
+		int vertices[] = new int[order];
+		for(int i = 0;i < order;i++){
+			vertices[i] = verticesList.get(i);
+		}
+		return new Graph(this.points,arcs,vertices);
 	}
 
 	/** @return The Euclidean distance between p1 and p2. */
@@ -302,7 +327,6 @@ public class Graph{
 	// TODO: dynprog
 	/** @return a set of lines that this graph consists of. */
 	public int[][] edges(){
-		System.err.println(order+"o,s"+size);
 		int[][] edges = new int[size][2];
 		int ctr = 0;
 		for(int i = 0;i < order;i++){
@@ -315,6 +339,19 @@ public class Graph{
 			}
 		}
 		return edges;
+	}
+
+	private void makeAdjacencyMatrix(){
+		adjacencyMatrix = new int[order][order];
+		for(int v = 0;v < order;v++){
+			for(int w = 0;w <= v;w++){
+				if(edges[v][w] > 0){
+					setDistance(v,w,distance(points[v],points[w]));
+				}else{
+					setDistance(v,w,-1);
+				}
+			}
+		}
 	}
 
 	/* The inverse to the vertices array. */

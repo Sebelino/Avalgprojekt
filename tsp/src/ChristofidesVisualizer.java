@@ -55,20 +55,20 @@ public class ChristofidesVisualizer extends Visualizer{
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 		}
 		g2d.setStroke(new BasicStroke(3,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-		g2d.setColor(Color.BLACK);
+		g2d.setColor(Color.decode("#339900"));
 		it = multigraph.iterator();
 		while(it.hasNext()) {
 			Line2D line = it.next();
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 		}
 		g2d.setStroke(new BasicStroke(2,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-		g2d.setColor(Color.MAGENTA);
+		g2d.setColor(Color.BLACK);
 		it = hamilton.iterator();
 		while(it.hasNext()) {
 			Line2D line = it.next();
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 		}
-		g2d.setColor(Color.BLACK);
+		//g2d.setColor(Color.BLACK);
 	}
 
 	public void updateMST(Graph mstGraph){
