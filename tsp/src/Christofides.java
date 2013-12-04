@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The Christofides approximation algorithm. Should give an answer with approximation factor 1.5.
  * @author Sebastian Olsson
@@ -21,9 +24,6 @@ public class Christofides extends Algorithm{
 		initGraphics(instance,"christofides");
 		initGraph(instance);
 		int[] tour = new int[instance.length];
-		for(int i = 0;i < tour.length;i++){
-			tour[i] = i;
-		}
 		mst = graph.mst();
 		System.err.println("mst=\n"+mst);
 		oddGraph = mst.oddDegreeGraph();
@@ -35,6 +35,26 @@ public class Christofides extends Algorithm{
 		hamiltoncycle = multigraph.hamiltonCycle();
 		System.err.println("hamiltongraph=\n"+hamiltoncycle);
 		updateVisualization(tourToCycle(tour));
+
+		int[][] edgeCounts = new int[hamiltoncycle.order][hamiltoncycle.order];
+		for(int i = 0;i < edgeCounts.length;i++){
+			for(int j = 0;j < edgeCounts[i].length;j++){
+				edgeCounts[i][j] = hamiltoncycle.edges[i][j];
+			}
+		}
+		List<Integer> tourList = new ArrayList<Integer>();
+		tourList.add(0);
+		for(int w = 0;w < hamiltoncycle.order;w++){
+			int v = tourList.get(tourList.size()-1);
+			if(edgeCounts[v][w] > 0){
+				edgeCounts[v][w]--;edgeCounts[w][v]--;
+				tourList.add(w);
+				w = 0;
+			}
+		}
+		for(int i = 0;i < tourList.size();i++){
+			tour[i] = tourList.get(i);
+		}
 		return tour;
 	}
 	
@@ -56,19 +76,19 @@ public class Christofides extends Algorithm{
 	@Override
     protected void updateVisualization(int[] tour){
     	if(visualize){
-//    		repaint(1500);
+//    		repaint(1000);
 //    		visualizer.updateSol(tour);
-    		repaint(1500);
+    		repaint(1000);
     		((ChristofidesVisualizer)visualizer).updateMST(mst);
-    		repaint(1500);
+    		repaint(1000);
     		((ChristofidesVisualizer)visualizer).updateOddGraph(oddGraph);
-    		repaint(1500);
+    		repaint(1000);
     		((ChristofidesVisualizer)visualizer).updateMatchGraph(match);
-    		repaint(1500);
+    		repaint(1000);
     		((ChristofidesVisualizer)visualizer).updateMultiGraph(multigraph);
-    		repaint(1500);
+    		repaint(1000);
     		((ChristofidesVisualizer)visualizer).updateHamiltonGraph(hamiltoncycle);
-    		repaint(1500);
+    		repaint(1000);
     	}
     }
 	

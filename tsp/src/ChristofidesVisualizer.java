@@ -61,7 +61,7 @@ public class ChristofidesVisualizer extends Visualizer{
 			Line2D line = it.next();
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 		}
-		g2d.setStroke(new BasicStroke(2,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		g2d.setStroke(new BasicStroke(3,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 		g2d.setColor(Color.BLACK);
 		it = hamilton.iterator();
 		while(it.hasNext()) {
