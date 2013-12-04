@@ -5,17 +5,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JTable.PrintMode;
+
 /**
- * An undirected graph with non-negative weights.
+ * An undirected Euclidean (multi-)graph.
  * @author Sebastian Olsson
  */
 public class Graph{
-	private float[][] points; /* (points[i][0],points[i][1]) is the point for vertex vertices[i]. */
-	private final int[] vertices; /* :: Index -> ID. Sorted. */
-	private final int[][] adjacencyMatrix; /* adjacencyMatrix[i][j] == distance(vertices[i],vertices[j]) */
+	public float[][] points; /* (points[i][0],points[i][1]) is the point for vertex vertices[i]. */
+	public final int[] vertices; /* :: Index -> ID. Sorted. */
+	public final int[][] adjacencyMatrix; /* adjacencyMatrix[i][j] == distance(vertices[i],vertices[j]) */
 	public final boolean complete;
 	public final int order; /* Number of vertices. */
 	public final int size; /* Number of edges. */
+	public final int[][] edges; /* The number of edges between each pair of vertices. */
 
 	// TODO: Futtig shallow copy-optimering.
 	/** Constructs a complete graph from a set of Euclidean points. */
@@ -27,9 +30,11 @@ public class Graph{
 		this.points = points;
 		/* Initialize adjacency matrix */
 		adjacencyMatrix = new int[order][order];
+		edges = new int[order][order];
 		for(int p1 = 0;p1 < order;p1++){
 			for(int p2 = 0;p2 < order;p2++){
 				adjacencyMatrix[p1][p2] = distance(points[p1],points[p2]);
+				edges[p1][p2] = 1;
 			}
 		}
 	}
@@ -37,20 +42,23 @@ public class Graph{
 		this(points,Util.ring(points.length));
 	}
 
-	/** Constructs a spanning tree from the edges and matrix of weights. */
-	public Graph(float[][] points,int[][] edges,int[][] weights,int[] vertices){
+	public Graph(float[][] points,int[][] arcs,int[][] weights,int[] vertices){
 		order = weights.length;
-		size = edges.length;
+		size = arcs.length;
 		complete = size == Math.max(0,order*(order-1)/2);
 		/* Initialize adjacency matrix */
 		adjacencyMatrix = new int[order][order];
+		this.edges = new int[order][order];
 		for(int p1 = 0;p1 < order;p1++){
 			for(int p2 = 0;p2 < order;p2++){
 				adjacencyMatrix[p1][p2] = -1;
+				edges[p1][p2] = 0;
 			}
 		}
-		for(int[] edge : edges){
-			setDistance(edge,weights[edge[0]][edge[1]]);
+		for(int[] arc : arcs){
+			setDistance(arc,weights[arc[0]][arc[1]]);
+			edges[arc[0]][arc[1]] = 1;
+			edges[arc[1]][arc[0]] = 1;
 		}
 		this.vertices = vertices;
 		this.points = points;
@@ -65,9 +73,11 @@ public class Graph{
 		complete = size == Math.max(order-1,0)*(order-1);
 		/* Initialize adjacency matrix */
 		adjacencyMatrix = new int[order][order];
+		edges = new int[order][order];
 		for(int p1 = 0;p1 < order;p1++){
 			for(int p2 = 0;p2 < order;p2++){
 				adjacencyMatrix[p1][p2] = -1;
+				edges[p1][p2] = 0;
 			}
 		}
 		for(int i = 0;i < order;i += 2){
@@ -76,6 +86,52 @@ public class Graph{
 			adjacencyMatrix[v][w] = distance(points[v],points[w]);
 			adjacencyMatrix[w][v] = adjacencyMatrix[v][w];
 			setDistance(v,w,distance(points[v],points[w]));
+			edges[v][w] = 1;
+			edges[w][v] = 1;
+		}
+	}
+
+	/** Constructs the join of two graphs. g1 is assumed to be a supergraph to g1, vertex-ically speaking. */
+	public Graph(Graph g1,Graph g2){
+		/* Join point sets */
+		points = g1.points;
+		/* Join vertices */
+		vertices = g1.vertices;
+		/* Misc */
+		order = vertices.length;
+		size = Math.max(0,order*(order-1)/2);
+		complete = false;
+		/* Edge & adjacency matrix */
+		edges = new int[order][order];
+		adjacencyMatrix = new int[order][order];
+		int[] map = new int[g2.order]; // :: Index_g2 -> Index_g1
+		for(int i = 0;i < g2.order;i++){
+			int v = -1;
+			for(int j = 0;j < g1.order;j++){
+				if(g2.vertices[i] == g1.vertices[j]){
+					v = j;
+					break;
+				}
+			}
+			map[i] = v;
+		}
+		Util.printArray(g1.vertices);
+		Util.printArray(g2.vertices);
+		Util.printArray(map);
+		for(int i = 0;i < order;i++){
+			for(int j = 0;j < order;j++){
+				edges[i][j] = g1.edges[i][j];
+				adjacencyMatrix[i][j] = g1.adjacencyMatrix[i][j];
+			}
+		}
+		for(int i = 0;i < g2.order;i++){
+			for(int j = 0;j < g2.order;j++){
+				if(g2.edges[i][j] > 0){
+					edges[map[i]][map[j]] += g2.edges[i][j];
+					System.err.println("setting "+map[i]+","+map[j]+" -> "+g2.adjacencyMatrix[i][j]);
+					adjacencyMatrix[map[i]][map[j]] = g2.adjacencyMatrix[i][j];
+				}
+			}
 		}
 	}
 
@@ -165,7 +221,6 @@ public class Graph{
 		Iterator<List<Integer>> it = pi.iterator();
 		while(it.hasNext()){
 			List<Integer> permutation = it.next();
-			System.err.println("perm="+permutation);
 			int totalDistance = 0;
 			for(int i = 0;i < order;i += 2){
 				final int v = permutation.get(i);
@@ -173,6 +228,7 @@ public class Graph{
 				final int distance = adjacencyMatrix[idToIndex(v)][idToIndex(w)];
 				totalDistance += distance;
 			}
+			System.err.println("perm="+permutation+" total="+totalDistance+" cd="+candidateDistance);
 			if(totalDistance < candidateDistance){
 				candidateDistance = totalDistance;
 				candidateMatching = new ArrayList<Integer>(permutation);

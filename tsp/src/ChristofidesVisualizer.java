@@ -14,19 +14,21 @@ public class ChristofidesVisualizer extends Visualizer{
 	private Set<Line2D> mst;
 	private Set<Line2D> oddEdges;
 	private Set<Line2D> matching;
+	private Set<Line2D> multigraph;
 	
 	public ChristofidesVisualizer(float[][] coords,int frameWidth,int frameHeight){
 		super(coords,frameWidth,frameHeight);
 		mst = new HashSet<Line2D>();
 		oddEdges = new HashSet<Line2D>();
 		matching = new HashSet<Line2D>();
+		multigraph = new HashSet<Line2D>();
 	}
 
 	@Override
 	public void drawSolution(Graphics g) {
 		super.drawSolution(g);
 		Graphics2D g2d = (Graphics2D)g;
-		g2d.setStroke(new BasicStroke(3,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		g2d.setStroke(new BasicStroke(4,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g2d.setColor(Color.BLUE);
@@ -43,9 +45,16 @@ public class ChristofidesVisualizer extends Visualizer{
 			Line2D line = it.next();
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
 		}
-		g2d.setStroke(new BasicStroke(4,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-		g2d.setColor(Color.MAGENTA);
+		g2d.setStroke(new BasicStroke(7,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		g2d.setColor(Color.ORANGE);
 		it = matching.iterator();
+		while(it.hasNext()) {
+			Line2D line = it.next();
+			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
+		}
+		g2d.setStroke(new BasicStroke(3,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+		g2d.setColor(Color.BLACK);
+		it = multigraph.iterator();
 		while(it.hasNext()) {
 			Line2D line = it.next();
 			g2d.drawLine((int)line.getX1(),(int)line.getY1(),(int)line.getX2(),(int)line.getY2());
@@ -98,6 +107,23 @@ public class ChristofidesVisualizer extends Visualizer{
 			Point2D p1 = coords[v];
 			Point2D p2 = coords[w];
 			matching.add(new Line2D.Float(p1,p2));
+		}
+	}
+
+	public void updateMultiGraph(Graph mGraph){
+		multigraph = new HashSet<Line2D>();
+		if(mGraph == null){
+			return;
+		}
+		for(int[] e : mGraph.edges()){
+			System.err.println("multiedges="+e[0]+","+e[1]);
+		}
+		for(int[] edge : mGraph.edges()){
+			int v = edge[0];
+			int w = edge[1];
+			Point2D p1 = coords[v];
+			Point2D p2 = coords[w];
+			multigraph.add(new Line2D.Float(p1,p2));
 		}
 	}
 }

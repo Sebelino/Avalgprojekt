@@ -7,6 +7,7 @@ public class Christofides extends Algorithm{
 	Graph mst;
 	Graph oddGraph;
 	Graph match;
+	Graph multigraph; /* mst + match */
 	
 	public Christofides(){}
 
@@ -28,6 +29,10 @@ public class Christofides extends Algorithm{
 		System.err.println("oddgraph=\n"+oddGraph);
 		match = oddGraph.minimalPerfectMatching();
 		System.err.println("match=\n"+match);
+		multigraph = new Graph(mst,match);
+		System.err.println("mst=\n"+mst);
+		System.err.println("match=\n"+match);
+		System.err.println("multigraph=\n"+multigraph);
 		updateVisualization(tourToCycle(tour));
 		return tour;
 	}
@@ -58,6 +63,8 @@ public class Christofides extends Algorithm{
     		((ChristofidesVisualizer)visualizer).updateOddGraph(oddGraph);
     		repaint(1500);
     		((ChristofidesVisualizer)visualizer).updateMatchGraph(match);
+    		repaint(1500);
+    		((ChristofidesVisualizer)visualizer).updateMultiGraph(multigraph);
     		repaint(1500);
     	}
     }
