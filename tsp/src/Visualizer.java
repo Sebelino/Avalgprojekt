@@ -74,7 +74,7 @@ public class Visualizer extends JPanel{
 
 		if(coords != null) {
 			for(int i = 0;i<coords.length;i++) {
-				g2d.drawString(""+i,(int) coords[i].x+5, (int) coords[i].y+5);
+				g2d.drawString(""+i,(int) coords[i].x+7, (int) coords[i].y-7);
 			}
 		}
 		g2d.setColor(Color.GREEN);

@@ -117,6 +117,9 @@ public class ChristofidesVisualizer extends Visualizer{
 			Point2D p2 = coords[w];
 			matching.add(new Line2D.Float(p1,p2));
 		}
+		Util.printMatrix(matchingGraph.edges());
+		System.err.println(matchingGraph.size);
+		Util.printArray(matchingGraph.vertices);
 	}
 
 	public void updateMultiGraph(Graph mGraph){

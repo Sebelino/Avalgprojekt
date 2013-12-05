@@ -32,8 +32,13 @@ public class Graph{
 		edges = new int[order][order];
 		for(int p1 = 0;p1 < order;p1++){
 			for(int p2 = 0;p2 < order;p2++){
-				adjacencyMatrix[p1][p2] = distance(points[vertices[p1]],points[vertices[p2]]);
-				edges[p1][p2] = 1;
+				if(p1 != p2){
+					adjacencyMatrix[p1][p2] = distance(points[vertices[p1]],points[vertices[p2]]);
+					edges[p1][p2] = 1;
+				}else{
+					adjacencyMatrix[p1][p2] = 0;
+					edges[p1][p2] = 0;
+				}
 			}
 		}
 	}
@@ -89,7 +94,7 @@ public class Graph{
 		this.vertices = vertices;
 		this.points = points;
 		order = vertices.length;
-		size = Math.max(0,order*(order-1)/2);
+		size = order/2;
 		complete = size == Math.max(order-1,0)*(order-1);
 		/* Initialize adjacency matrix */
 		adjacencyMatrix = new int[order][order];
@@ -243,7 +248,7 @@ public class Graph{
 				final int distance = adjacencyMatrix[idToIndex(v)][idToIndex(w)];
 				totalDistance += distance;
 			}
-//			System.err.print("perm="+permutation+" total="+totalDistance+" cd="+candidateDistance);
+			System.err.println("perm="+permutation+" total="+totalDistance+" cd="+candidateDistance);
 			if(totalDistance < candidateDistance){
 				candidateDistance = totalDistance;
 				candidateMatching = new ArrayList<Integer>(permutation);
