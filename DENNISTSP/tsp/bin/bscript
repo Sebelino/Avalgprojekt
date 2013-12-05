@@ -1,0 +1,6 @@
+java Opt < $1 > res.txt
+java Opt < $1 >> res.txt
+java Opt < $1 >> res.txt
+java Opt < $1 >> res.txt
+java Opt < $1 >> res.txt
+sed -n "/${start}$/,/${end}$/p" res.txt | nawk '{sum+=$0}END{print sum/NR}'
