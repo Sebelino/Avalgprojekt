@@ -263,30 +263,75 @@ public class Graph{
 		return matching;
 	}
 
-	/** @return A corresponding Hamiltonian cycle if this graph is an Euclidean circuit. */
-	public Graph hamiltonCycle(){
+	/** @return An Euler circuit in the form [x1,x2,...,xn] if applicable to the graph. */
+	private List<Integer> eulerCircuit(){
+		return hierholzer();
+	}
+	private List<Integer> hierholzer(){
+		List<List<Integer>> trails = new ArrayList<List<Integer>>();
 		int[][] edgeCounts = new int[order][order];
 		for(int i = 0;i < order;i++){
 			for(int j = 0;j < order;j++){
 				edgeCounts[i][j] = edges[i][j];
 			}
 		}
-		List<Integer> euclideanCircuit = new ArrayList<Integer>();
-		euclideanCircuit.add(0);
-		for(int w = 0;w < order;w++){
-			int v = euclideanCircuit.get(euclideanCircuit.size()-1);
-			if(edgeCounts[v][w] > 0){
-				edgeCounts[v][w]--;edgeCounts[w][v]--;
-				euclideanCircuit.add(w);
-				w = 0;
+		boolean edgesLeft;
+		do{
+			edgesLeft = false;
+			List<Integer> trail = new ArrayList<Integer>();
+			for(int v = 0;v < order && !edgesLeft;v++){
+				for(int w = 0;w < order && !edgesLeft;w++){
+					if(edgeCounts[v][w] > 0){
+						edgesLeft = true;
+						edgeCounts[v][w]--; edgeCounts[w][v]--;
+						trail.add(v); trail.add(w);
+					}
+				}
+			}
+			if(!edgesLeft){continue;}
+			int v = trail.get(trail.size()-1);
+			for(int w = 0;w < order;w++){
+				if(edgeCounts[v][w] > 0){
+					//System.err.println("walkin' "+v+" -> "+w);
+					edgeCounts[v][w]--; edgeCounts[w][v]--;
+					trail.add(w);
+					v = w;
+					w = -1;
+				}
+			}
+			trails.add(trail);
+		}while(edgesLeft);
+		//System.err.println("trails= "+trails);
+		List<Integer> circuit = new ArrayList<Integer>(trails.iterator().next());
+		for(int i = 1;i < trails.size();i++){
+			List<Integer> t = trails.get(i);
+			for(int j = 0;j < circuit.size();j++){
+				final int v = circuit.get(j);
+				if(t.contains(v)){
+					final int index = t.indexOf(v);
+					circuit.remove(j);
+					Collections.rotate(t,t.size()-index);
+					//System.err.println("rot="+t);
+					circuit.addAll(j,t);
+					break;
+				}
 			}
 		}
+		return circuit;
+	}
+
+	/** @return A corresponding Hamiltonian cycle if this graph is an Euclidean circuit. */
+	public Graph hamiltonCycle(){
+		System.err.println("CREATING HAMILTON");
+		List<Integer> eulerCircuit = eulerCircuit();
+		System.err.println("euler=   "+eulerCircuit);
 		List<Integer> hamiltonCycle = new ArrayList<Integer>();
-		for(int v : euclideanCircuit){
+		for(int v : eulerCircuit){
 			if(!hamiltonCycle.contains(v)){
 				hamiltonCycle.add(v);
 			}
 		}
+		System.err.println("hamilton="+hamiltonCycle);
 		int[][] arcs = new int[hamiltonCycle.size()][2];
 		for(int i = 0;i < hamiltonCycle.size()-1;i++){
 			arcs[i][0] = hamiltonCycle.get(i);
@@ -296,7 +341,7 @@ public class Graph{
 		arcs[arcs.length-1][1] = hamiltonCycle.get(0);
 		List<Integer> verticesList = new ArrayList<Integer>(hamiltonCycle);
 		Collections.sort(verticesList);
-		int vertices[] = new int[order];
+		int[] vertices = new int[order];
 		for(int i = 0;i < order;i++){
 			vertices[i] = verticesList.get(i);
 		}

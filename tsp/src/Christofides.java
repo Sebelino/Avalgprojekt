@@ -26,12 +26,16 @@ public class Christofides extends Algorithm{
 		int[] tour = new int[instance.length];
 		mst = graph.mst();
 		System.err.println("mst=\n"+mst);
+		//updateVisualization(tourToCycle(tour));
 		oddGraph = mst.oddDegreeGraph();
 		System.err.println("oddgraph=\n"+oddGraph);
+		//updateVisualization(tourToCycle(tour));
 		match = oddGraph.minimalPerfectMatching();
 		System.err.println("match=\n"+match);
+		//updateVisualization(tourToCycle(tour));
 		multigraph = new Graph(mst,match);
 		System.err.println("multigraph=\n"+multigraph);
+		//updateVisualization(tourToCycle(tour));
 		hamiltoncycle = multigraph.hamiltonCycle();
 		System.err.println("hamiltongraph=\n"+hamiltoncycle);
 		updateVisualization(tourToCycle(tour));
