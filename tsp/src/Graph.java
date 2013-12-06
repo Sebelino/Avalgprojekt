@@ -281,7 +281,14 @@ public class Graph{
 			List<Integer> trail = new ArrayList<Integer>();
 			for(int v = 0;v < order && !edgesLeft;v++){
 				for(int w = 0;w < order && !edgesLeft;w++){
-					if(edgeCounts[v][w] > 0){
+					boolean vIsVisited = false;
+					for(List<Integer> t : trails){
+						if(t.contains(v)){
+							vIsVisited = true;
+							break;
+						}
+					}
+					if(edgeCounts[v][w] > 0 && (trails.isEmpty() || vIsVisited)){
 						edgesLeft = true;
 						edgeCounts[v][w]--; edgeCounts[w][v]--;
 						trail.add(v); trail.add(w);
@@ -300,6 +307,10 @@ public class Graph{
 			}
 			trails.add(trail);
 		}while(edgesLeft);
+		System.err.println("trails.size="+trails.size());
+		for(List<Integer> t : trails){
+			System.err.println("trail="+t);
+		}
 		List<Integer> circuit = new ArrayList<Integer>(trails.iterator().next());
 		for(int i = 1;i < trails.size();i++){
 			List<Integer> t = trails.get(i);
@@ -314,6 +325,8 @@ public class Graph{
 				}
 			}
 		}
+		System.err.println("eulercircuit.size="+circuit.size());
+		System.err.println("eulercircuit="+circuit);
 		return circuit;
 	}
 

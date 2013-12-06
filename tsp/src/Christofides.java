@@ -6,6 +6,8 @@ import java.util.List;
  * @author Sebastian Olsson
  */
 public class Christofides extends Algorithm{
+	public final boolean VISUALIZE = true;
+
 	Graph graph;
 	Graph mst;
 	Graph oddGraph;
@@ -21,7 +23,9 @@ public class Christofides extends Algorithm{
 
 	public int[] tour(float[][] instance){
 		visualize = false;
-		initGraphics(instance,"christofides");visualize = true;
+		if(VISUALIZE){
+			initGraphics(instance,"christofides");visualize = true;
+		}
 		System.err.println("Initializing graph...");
 		initGraph(instance);
 		int[] tour = new int[instance.length];
