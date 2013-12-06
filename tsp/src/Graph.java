@@ -122,7 +122,7 @@ public class Graph{
 		vertices = g1.vertices;
 		/* Misc */
 		order = vertices.length;
-		size = Math.max(0,order*(order-1)/2);
+		size = g1.size+g2.size;
 		complete = false;
 		/* Edge & adjacency matrix */
 		edges = new int[order][order];

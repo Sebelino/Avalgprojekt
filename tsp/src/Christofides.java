@@ -82,17 +82,18 @@ public class Christofides extends Algorithm{
     	if(visualize){
 //    		repaint(1500);
 //    		visualizer.updateSol(tour);
-    		repaint(1500);
+    		int time = 150;
+    		repaint(time);
     		((ChristofidesVisualizer)visualizer).updateMST(mst);
-    		repaint(1500);
+    		repaint(time);
     		((ChristofidesVisualizer)visualizer).updateOddGraph(oddGraph);
-    		repaint(1500);
+    		repaint(time);
     		((ChristofidesVisualizer)visualizer).updateMatchGraph(match);
-    		repaint(1500);
+    		repaint(time);
     		((ChristofidesVisualizer)visualizer).updateMultiGraph(multigraph);
-    		repaint(1500);
+    		repaint(time);
     		((ChristofidesVisualizer)visualizer).updateHamiltonGraph(hamiltoncycle);
-    		repaint(1500);
+    		repaint(time);
     	}
     }
 	
