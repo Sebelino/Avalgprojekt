@@ -1,0 +1,6 @@
+java Opt < ../data/qatar194.tst > res.txt
+java Opt < ../data/qatar194.tst >> res.txt
+java Opt < ../data/qatar194.tst >> res.txt
+java Opt < ../data/qatar194.tst >> res.txt
+java Opt < ../data/qatar194.tst >> res.txt
+sed -n "/${start}$/,/${end}$/p" res.txt | nawk '{sum+=$0}END{print sum/NR}'
