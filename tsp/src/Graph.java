@@ -186,10 +186,12 @@ public class Graph{
 			edges[edgeCtr][0] = candidateVertex[0];
 			edges[edgeCtr][1] = candidateVertex[1];
 		}
+		List<Integer> vlist = new ArrayList<Integer>(vertices);
+		Collections.sort(vlist);
 		// I hate primitive types in Java.
-		int[] verticesArray = new int[vertices.size()];
-		Integer[] verticesList = Arrays.copyOf(vertices.toArray(),vertices.size(),Integer[].class);
-		for(int v = 0;v < vertices.size();v++){
+		int[] verticesArray = new int[vlist.size()];
+		Integer[] verticesList = Arrays.copyOf(vlist.toArray(),vlist.size(),Integer[].class);
+		for(int v = 0;v < vlist.size();v++){
 			verticesArray[v] = verticesList[v];
 		}
 		System.err.println("creating mst");
@@ -202,7 +204,7 @@ public class Graph{
 	 * of odd-degreed vertices.
 	 */
 	public Graph oddDegreeGraph(){
-		Set<Integer> oddVertices = new HashSet<Integer>();
+		List<Integer> oddVertices = new ArrayList<Integer>();
 		for(int i = 0;i < order;i++){
 			if(degree(i) % 2 == 1){
 				oddVertices.add(vertices[i]);
@@ -238,7 +240,6 @@ public class Graph{
 		int candidateDistance = Integer.MAX_VALUE;
 		Permutations pi = new Permutations(vertices);
 		Iterator<List<Integer>> it = pi.iterator();
-		System.err.println("vertices");
 		while(it.hasNext()){
 			List<Integer> permutation = it.next();
 			int totalDistance = 0;
@@ -405,7 +406,8 @@ public class Graph{
 
 	/* The inverse to the vertices array. */
 	public int idToIndex(int id){
-		return Arrays.binarySearch(vertices,id);
+		int index = Arrays.binarySearch(vertices,id);
+		return index;
 	}
 
 	@Override
