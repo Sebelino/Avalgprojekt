@@ -3,9 +3,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class Permutations implements Iterable<List<Integer>>{
 	private List<Integer> elements;
+	private final int limit = 1000;
+	private int counter;
 
 	public Permutations(int[] array){
 		elements = new ArrayList<Integer>();
@@ -13,6 +16,7 @@ public class Permutations implements Iterable<List<Integer>>{
 			elements.add(e);
 		}
 		Collections.sort(elements);
+		counter = 0;
 	}
 
 	@Override
@@ -24,23 +28,36 @@ public class Permutations implements Iterable<List<Integer>>{
 				if(current == null){
 					return true;
 				}
-				for(int i = 0;i < current.size()-1;i++){
-					if(current.get(i) < current.get(i+1)){
-						return true;
-					}
+				//for(int i = 0;i < current.size()-1;i++){
+				//	if(current.get(i) < current.get(i+1)){
+				//		return true;
+				//	}
+				//}
+				if(counter < limit){
+					return true;
 				}
 				return false;
 			}
 			@Override
 			public List<Integer> next() {
-				permutate();
+				//permutate();
+				randomize();
+				counter++;
 				return current;
 			}
 			@Override
 			public void remove() {
 				throw new RuntimeException("Not implemented.");
 			}
+			private void randomize(){
+				if(current == null){
+					current = elements;
+				}
+				long seed = System.nanoTime();
+				Collections.shuffle(current,new Random(seed));
+			}
 
+			@SuppressWarnings("unused")
 			private void permutate(){
 				if(current == null){
 					current = elements;
@@ -76,6 +93,7 @@ public class Permutations implements Iterable<List<Integer>>{
 				current.addAll(postfix);
 			}
 
+			@SuppressWarnings("unused")
 			private BigInteger factorial(int n) {
 				BigInteger fac = BigInteger.ONE;
 				while(n > 0){
