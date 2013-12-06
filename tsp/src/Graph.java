@@ -194,7 +194,6 @@ public class Graph{
 		for(int v = 0;v < vlist.size();v++){
 			verticesArray[v] = verticesList[v];
 		}
-		System.err.println("creating mst");
 		Graph mst = new Graph(points,edges,adjacencyMatrix,verticesArray);
 		return mst;
 	}
@@ -249,13 +248,13 @@ public class Graph{
 				final int distance = adjacencyMatrix[idToIndex(v)][idToIndex(w)];
 				totalDistance += distance;
 			}
-			System.err.println("perm="+permutation+" total="+totalDistance+" cd="+candidateDistance);
+			//System.err.println("perm="+permutation+" total="+totalDistance+" cd="+candidateDistance);
 			if(totalDistance < candidateDistance){
 				candidateDistance = totalDistance;
 				candidateMatching = new ArrayList<Integer>(permutation);
 			}
 		}
-		System.err.println("done"+candidateMatching);
+		//System.err.println("Done with permutation "+candidateMatching);
 		int[] perfectMatchingArray = new int[order];
 		for(int i = 0;i < order;i++){
 			perfectMatchingArray[i] = candidateMatching.get(i);
@@ -293,7 +292,6 @@ public class Graph{
 			int v = trail.get(trail.size()-1);
 			for(int w = 0;w < order;w++){
 				if(edgeCounts[v][w] > 0){
-					//System.err.println("walkin' "+v+" -> "+w);
 					edgeCounts[v][w]--; edgeCounts[w][v]--;
 					trail.add(w);
 					v = w;
@@ -302,7 +300,6 @@ public class Graph{
 			}
 			trails.add(trail);
 		}while(edgesLeft);
-		//System.err.println("trails= "+trails);
 		List<Integer> circuit = new ArrayList<Integer>(trails.iterator().next());
 		for(int i = 1;i < trails.size();i++){
 			List<Integer> t = trails.get(i);
@@ -312,7 +309,6 @@ public class Graph{
 					final int index = t.indexOf(v);
 					circuit.remove(j);
 					Collections.rotate(t,t.size()-index);
-					//System.err.println("rot="+t);
 					circuit.addAll(j,t);
 					break;
 				}
@@ -323,16 +319,14 @@ public class Graph{
 
 	/** @return A corresponding Hamiltonian cycle if this graph is an Euclidean circuit. */
 	public Graph hamiltonCycle(){
-		System.err.println("CREATING HAMILTON");
+		System.err.println("Creating hamilton...");
 		List<Integer> eulerCircuit = eulerCircuit();
-		System.err.println("euler=   "+eulerCircuit);
 		List<Integer> hamiltonCycle = new ArrayList<Integer>();
 		for(int v : eulerCircuit){
 			if(!hamiltonCycle.contains(v)){
 				hamiltonCycle.add(v);
 			}
 		}
-		System.err.println("hamilton="+hamiltonCycle);
 		int[][] arcs = new int[hamiltonCycle.size()][2];
 		for(int i = 0;i < hamiltonCycle.size()-1;i++){
 			arcs[i][0] = hamiltonCycle.get(i);

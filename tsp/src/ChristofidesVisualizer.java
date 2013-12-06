@@ -90,9 +90,9 @@ public class ChristofidesVisualizer extends Visualizer{
 		if(oddGraph == null){
 			return;
 		}
-		for(int[] e : oddGraph.edges()){
-			System.err.println("oddedges="+e[0]+","+e[1]);
-		}
+//		for(int[] e : oddGraph.edges()){
+//			System.err.println("oddedges="+e[0]+","+e[1]);
+//		}
 		for(int[] edge : oddGraph.edges()){
 			int v = edge[0];
 			int w = edge[1];
@@ -107,9 +107,9 @@ public class ChristofidesVisualizer extends Visualizer{
 		if(matchingGraph == null){
 			return;
 		}
-		for(int[] e : matchingGraph.edges()){
-			System.err.println("matchedges="+e[0]+","+e[1]);
-		}
+//		for(int[] e : matchingGraph.edges()){
+//			System.err.println("matchedges="+e[0]+","+e[1]);
+//		}
 		for(int[] edge : matchingGraph.edges()){
 			int v = edge[0];
 			int w = edge[1];
@@ -117,9 +117,6 @@ public class ChristofidesVisualizer extends Visualizer{
 			Point2D p2 = coords[w];
 			matching.add(new Line2D.Float(p1,p2));
 		}
-		Util.printMatrix(matchingGraph.edges());
-		System.err.println(matchingGraph.size);
-		Util.printArray(matchingGraph.vertices);
 	}
 
 	public void updateMultiGraph(Graph mGraph){
@@ -127,9 +124,9 @@ public class ChristofidesVisualizer extends Visualizer{
 		if(mGraph == null){
 			return;
 		}
-		for(int[] e : mGraph.edges()){
-			System.err.println("multiedges="+e[0]+","+e[1]);
-		}
+//		for(int[] e : mGraph.edges()){
+//			System.err.println("multiedges="+e[0]+","+e[1]);
+//		}
 		for(int[] edge : mGraph.edges()){
 			int v = edge[0];
 			int w = edge[1];
@@ -144,9 +141,9 @@ public class ChristofidesVisualizer extends Visualizer{
 		if(hamiltonGraph == null){
 			return;
 		}
-		for(int[] e : hamiltonGraph.edges()){
-			System.err.println("hamiltonedges="+e[0]+","+e[1]);
-		}
+//		for(int[] e : hamiltonGraph.edges()){
+//			System.err.println("hamiltonedges="+e[0]+","+e[1]);
+//		}
 		for(int[] edge : hamiltonGraph.edges()){
 			int v = edge[0];
 			int w = edge[1];

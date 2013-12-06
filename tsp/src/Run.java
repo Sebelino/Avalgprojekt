@@ -91,7 +91,7 @@ public class Run{
         }catch(ClassNotFoundException e){
             algorithm = new Christofides();
         }
-        System.err.println("Using "+algorithm.getClass().getName());
+        System.err.println("Using "+algorithm.getClass().getName()+"...");
 		int[] tour = algorithm.tour(input);
 		run.printTour(tour);
 	}

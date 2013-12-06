@@ -17,29 +17,31 @@ public class Christofides extends Algorithm{
 
 	private void initGraph(float[][] instance){
 		graph = new Graph(instance);
-		System.err.println(graph);
 	}
 
 	public int[] tour(float[][] instance){
-		initGraphics(instance,"christofides");
+		visualize = false;
+		initGraphics(instance,"christofides");visualize = true;
+		System.err.println("Initializing graph...");
 		initGraph(instance);
 		int[] tour = new int[instance.length];
+		System.err.println("Computing MST...");
 		mst = graph.mst();
-		System.err.println("mst=\n"+mst);
 		//updateVisualization(tourToCycle(tour));
+		System.err.println("Computing odd-degree graph...");
 		oddGraph = mst.oddDegreeGraph();
-		System.err.println("oddgraph=\n"+oddGraph);
 		//updateVisualization(tourToCycle(tour));
+		System.err.println("Computing minimal perfect matching...");
 		match = oddGraph.minimalPerfectMatching();
-		System.err.println("match=\n"+match);
 		//updateVisualization(tourToCycle(tour));
+		System.err.println("Computing multigraph...");
 		multigraph = new Graph(mst,match);
-		System.err.println("multigraph=\n"+multigraph);
 		//updateVisualization(tourToCycle(tour));
+		System.err.println("Computing hamilton cycle...");
 		hamiltoncycle = multigraph.hamiltonCycle();
-		System.err.println("hamiltongraph=\n"+hamiltoncycle);
 		updateVisualization(tourToCycle(tour));
 
+		System.err.println("Computing tour...");
 		int[][] edgeCounts = new int[hamiltoncycle.order][hamiltoncycle.order];
 		for(int i = 0;i < edgeCounts.length;i++){
 			for(int j = 0;j < edgeCounts[i].length;j++){
@@ -80,9 +82,10 @@ public class Christofides extends Algorithm{
 	@Override
     protected void updateVisualization(int[] tour){
     	if(visualize){
+			System.err.println("Visualizing...");
 //    		repaint(1500);
 //    		visualizer.updateSol(tour);
-    		int time = 150;
+    		int time = 0;
     		repaint(time);
     		((ChristofidesVisualizer)visualizer).updateMST(mst);
     		repaint(time);
